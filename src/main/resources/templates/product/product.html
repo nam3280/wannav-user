@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/product/product.css">
+  <script type="module" src="/js/product/product.js"></script>
+  <title>Product Detail Page</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <div class="product-container">
+    <span id="hiddenProductId" th:text="${product.id}" hidden="hidden"></span>
+    <div class="detail-container">
+      <img th:id="product-image" th:src="@{${product.image}}" alt="Product image"/>
+      <div class="product-info-container">
+        <p class="product-name" th:id="product-name" th:text="${product.name}"></p>
+        <div class="product-price-container">
+          <span class="product-discount-rate" th:id="discount-rate"
+                th:text="${product.discountRate} + '%'"></span>
+          <div class="price-container">
+            <span class="selling-price price" th:id="selling-price"
+                  th:data-price="${product.sellingPrice}"></span>
+            <span class="final-price price" th:id="final-price"
+                  th:data-price="${product.finalPrice}"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-description-container">
+      <div th:each="description : ${product.description}">
+        <img th:src="@{${description}}" alt="Product Description"/>
+      </div>
+    </div>
+  </div>
+  <div class="action-buttons">
+    <button
+        class="btn btn-cart align-items-center"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasCart"
+        aria-controls="offcanvasCart"
+    >
+      장바구니
+    </button>
+    <button
+        class="btn btn-payment align-items-center"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasPayment"
+        aria-controls="offcanvasPayment"
+    >
+      구매하기
+    </button>
+  </div>
+  <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasCart"
+       aria-labelledby="offcanvasCartLabel">
+    <div class="offcanvas-body small">
+      <div class="offcanvas-container">
+        <p class="product-name" th:id="cart-product-name" th:text="${product.name}"></p>
+        <div class="quantity-container">
+          <span class="product-stock" th:id="cart-product-stock"
+                th:text="${product.stock} + '개 남음'"></span>
+          <div class="input-group quantity-selector">
+            <button class="btn btn-outline-secondary" type="button" id="cart-decrease-btn">-
+            </button>
+            <input type="number" class="form-control text-center" value="1"
+                   id="cart-quantity-input"/>
+            <button class="btn btn-outline-secondary" type="button" id="cart-increase-btn">+
+            </button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+              aria-label="Close"></button>
+    </div>
+    <div class="button-contain">
+      <button class="btn-cart" id="add-cart-item">장바구니 담기</button>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasPayment"
+       aria-labelledby="offcanvasPaymentLabel">
+    <div class="offcanvas-body small">
+      <div class="offcanvas-container">
+        <p class="product-name" th:id="order-product-name" th:text="${product.name}"></p>
+        <div class="quantity-container">
+          <span class="product-stock" th:id="order-product-stock"
+                th:text="${product.stock} + '개 남음'"></span>
+          <div class="input-group quantity-selector">
+            <button class="btn btn-outline-secondary" type="button" id="order-decrease-btn">-
+            </button>
+            <input type="number" class="form-control text-center" value="1"
+                   id="order-quantity-input"/>
+            <button class="btn btn-outline-secondary" type="button" id="order-increase-btn">+
+            </button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+              aria-label="Close"></button>
+    </div>
+    <div class="button-contain">
+      <button class="btn-payment" id="order-item">구매하기</button>
+    </div>
+  </div>
+</main>
+</body>
+</html>

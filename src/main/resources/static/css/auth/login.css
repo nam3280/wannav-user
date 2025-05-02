@@ -1,0 +1,29 @@
+.logo{
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+
+}
+.logo_image{
+  width: 300px;
+  height: 250px;
+}
+.login{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+.login_button{
+  margin-bottom: 20px;
+  width: 200px;
+  height: 50px;
+}
+.back{
+  color: #5aab6f;
+}
+
+.back:active,
+.back:focus{
+  color: #c6e7ce;
+}

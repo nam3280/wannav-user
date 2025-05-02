@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>My Reservation</title>
+</head>
+<body id="body">
+<main layout:fragment="main-content" th:class="main-container">
+    <section>
+        <!--필터링 Start-->
+        <form th:method="get" th:action="@{/reservations}">
+            <div class="mt-2 ms-2 me-2">
+                <select class="form-select" id="type" name="type" onchange="filtering(this)">
+                    <option>선택</option>
+                    <option value="new">최신순</option>
+                    <option value="old">과거순</option>
+                </select>
+            </div>
+        </form>
+        <!--필터링 End-->
+
+        <div class="row p-2">
+            <div class="col-lg-6 col-md-12 col-12 mb-1" th:each="reservation: ${myReservation}">
+                <div class="container-fluid border mb-1 bg-white">
+                    <form th:method="post" th:action="@{/reservations/{id}(id=${reservation.id})}">
+                        <input type="hidden" th:name="id" th:value="${reservation.id}">
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="align-items-center bg-transparent border-0 fw-bold mt-3 mb-4 ms-2 text-decoration-none text-success"
+                                    th:text="${reservation.createdAt.toLocalDate()}">
+                            </button>
+                            <button type="submit" class="align-items-center bg-transparent border-0 fw-bold mt-3 mb-4 ms-2 text-decoration-none text-success"
+                                    th:text="${'상세보기 >'}">
+                            </button>
+                        </div>
+                    </form>
+                    <a th:href="@{/restaurants/{id}(id=${reservation.restaurant.id})}">
+                        <img style="width: 100%; height: 200px; object-fit: cover;" th:src="${reservation.restaurant.image}" alt="">
+                    </a>
+
+                    <div class="ms-2 mt-3 mb-3">
+                        <a class="fw-bold fs-3 text-decoration-none text-black mb-4" th:text="${reservation.restaurant.name}" th:href="@{/restaurants/{id}(id=${reservation.restaurant.id})}"></a>
+                        <h6 class="fw-normal text-secondary mt-2"
+                            th:text="${reservation.reservationDate.year + '년 ' + reservation.reservationDate.monthValue + '월 ' + reservation.reservationDate.dayOfMonth + '일'} + ' ' + ${reservation.reservationTime} + ', ' + ${reservation.guest} + '명'"></h6>
+                        <h6 class="fw-bold mt-3" th:text="${#numbers.formatInteger(reservation.guest * 10000, 0, 'COMMA')} + '원'"></h6>
+                        <h6 th:if="${reservation.status == true}" class="fw-bold text-success me-2 mt-3" th:text="'예약 완료'"></h6>
+                        <h6 th:if="${reservation.status == false}" class="fw-bold text-danger me-2 mt-3" th:text="'예약 취소'"></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function filtering(element) {
+            const type = document.getElementById('type').value;
+
+            if(type === 'new' || type === 'old') {
+                axios.get('reservations', {
+                    params: {
+                        type: type
+                    }
+                })
+                    .then(response => {
+                        const reservations = response.data;
+                        document.getElementById('body').innerHTML = reservations;
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                    });
+            }
+        }
+    </script>
+    <script th:inline="javascript">
+        const alertMessage = [[${alertMessage}]];
+        if (alertMessage) {
+            alert(alertMessage);
+        }
+    </script>
+</main>
+</body>
+</html>

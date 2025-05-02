@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/event/events.css">
+  <title>Event List Page</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container" style="padding-top: 155px;">
+    <div th:each="event : ${eventList}">
+      <a th:href="@{/promotion/{eventId}(eventId=${event.eventId})}" class="card mb-3">
+        <span th:if="${T(java.time.LocalDate).now().isBefore(event.endDate)}"
+            class="badge text-bg-success" style="width: 15%; margin-bottom: 5px">진행중</span>
+        <span th:if="${T(java.time.LocalDate).now().isEqual(event.endDate) || T(java.time.LocalDate).now().isAfter(event.endDate)}"
+            class="badge text-bg-secondary" style="width: 15%; margin-bottom: 5px">종료</span>
+        <h5 class="card-title" th:text="${event.title}"></h5>
+        <p style="font-size: 15px" th:text="${event.startDate} + ' ~ ' + ${event.endDate}"></p>
+        <div class="card-body" style="padding: 0">
+          <img th:src="${event.thumbnail}" style="width: 320px; height: 300px; object-fit: cover;">
+        </div>
+      </a>
+    </div>
+</main>
+</body>
+</html>

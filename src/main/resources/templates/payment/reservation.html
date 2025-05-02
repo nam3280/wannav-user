@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>reservation Page</title>
+  <script src="https://js.tosspayments.com/v2/standard"></script>
+  <script src="/js/payment/reservation.js"></script>
+  <link rel="stylesheet" href="/css/payment/reservation.css">
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <div class="card">
+    <h4>예약 정보</h4>
+    <h5 th:text="'예약 장소 : ' + ${reservationPaymentResponseDTO.restaurantName}"></h5>
+    <h5 th:text="'예약 날짜 : ' + ${reservationPaymentResponseDTO.reservationDate} +
+      ' (' + ${reservationPaymentResponseDTO.dayOfWeek} + ') ' +
+      ${reservationPaymentResponseDTO.amPm} + ' ' +
+      ${reservationPaymentResponseDTO.reservationTime}"></h5>
+    <h5 th:text="'인원 수 : ' + ${reservationPaymentResponseDTO.guestAccount} + 명"></h5>
+  </div>
+  <div class="card" style="margin-top: 16px">
+    <div class="d-flex align-items-center">
+      <h4>예약금</h4>
+      <a class="position-relative btn-icon btn-ghost-secondary btn rounded-circle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-bottom: 12px;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="color: #5AAB6F;" width="20" height="20" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+        </svg>
+      </a>
+      <div class="dropdown-menu dropdown-menu-end dropdown-menu-lg p-0 border-radius-10" style="box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); background-color: #f6f6f6;">
+        <div class="border-bottom p-3 d-flexjustify-content-between align-items-center border-1">
+          <p class="mb-3">예약금 정책</p>
+          <p><span style="color: #5AAB6F;">1.</span> 2일 전 취소: 100% 환불</p>
+          <p><span style="color: #5AAB6F;">2.</span> 1일 전 취소: 50% 환불</p>
+          <p><span style="color: #5AAB6F;">3.</span> 당일 취소: 환불 불가</p>
+          <p><span style="color: #5AAB6F;">4.</span> 노쇼: 환불 불가</p>
+        </div>
+      </div>
+    </div>
+    <h5>계산 : (예약 인원 수) x 10,000원</h5>
+    <h5 id="payment-total" style="margin-bottom: 0;"></h5>
+  </div>
+  <div id="payment-method" style="margin-top: 16px"></div>
+
+  <div class="card" style="margin-top: 16px">
+    <div id="agreement"></div>
+  </div>
+
+  <div class="pay">
+    <p id="payment-amount"></p>
+    <button type="button" class="button-payment" id="payment-button">결제 하기</button>
+  </div>
+
+</main>
+</body>
+</html>
+<script th:inline="javascript">
+    const userId = [[${reservationPaymentResponseDTO.userId}]];
+    const restaurantId = [[${reservationPaymentResponseDTO.restaurantId}]];
+    const restaurantName = [[${reservationPaymentResponseDTO.restaurantName}]];
+    const guestAccount = [[${reservationPaymentResponseDTO.guestAccount}]];
+    const reservationDate = [[${reservationPaymentResponseDTO.reservationDate}]];
+    const reservationTime = [[${reservationPaymentResponseDTO.reservationTime}]];
+    const amount = [[${reservationPaymentResponseDTO.penalty}]];
+    const formattedAmount = amount.toLocaleString();
+    document.getElementById("payment-total").textContent = "결제 총액 : " + formattedAmount + "원";
+    document.getElementById("payment-amount").textContent = "결제 금액 : " + formattedAmount + "원";
+    const clientKey = [[${reservationPaymentResponseDTO.clientKey}]];
+</script>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>My Orders</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <!--날짜, 결제 번호-->
+  <section class="mt-2">
+    <div class="container-fluid bg-white border-bottom border-top mb-1 d-flex align-items-center">
+      <h6 class="fw-bold mb-1 mt-2 me-2" th:text="${myOrders.createdAt.toLocalDate()}"></h6>
+      <small class="mb-1 mt-2">|</small>
+      <h6 class="fw-bold mb-1 mt-2 ms-2" style="color: #5AAB6F;" th:text="${myOrders.orderId}"></h6>
+    </div>
+  </section>
+
+  <!--상품-->
+  <section class="mt-2">
+    <div class="container">
+      <h5 class="mt-4 fw-bold" style="color: #5AAB6F;">주문 상품</h5>
+    </div>
+    <div class="container bg-white border">
+      <div class="d-flex mb-2" th:each="orderProduct: ${myOrders.paymentItems}">
+        <div class="col-4 mt-2">
+          <a th:href="@{/products/{id}(id=${orderProduct.product.id})}">
+            <img class="w-100" style="height: 150px; object-fit: contain" th:src="${orderProduct.product.image}" alt="">
+          </a>
+        </div>
+
+        <div class="col-8">
+          <div class="p-4 h-100">
+            <a class="text-decoration-none text-black" th:href="@{/products/{id}(id=${orderProduct.product.id})}">
+              <h6 class="fw-bold" th:text="${orderProduct.product.name}"></h6>
+            </a>
+            <small class="text-secondary text-opacity-75" th:text="${'수량: ' + orderProduct.quantity + '개'}"></small>
+            <h6 class="fw-bold mt-3" th:text="${#numbers.formatInteger(orderProduct.product.finalPrice, 0, 'COMMA')} + '원'"></h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--배송지 정보-->
+  <section class="mt-3">
+    <div class="container">
+      <h5 class="fw-bold mt-4" style="color: #5AAB6F;">배송지 정보</h5>
+    </div>
+    <div class="container bg-white border">
+      <table class="table table-borderless mb-2 fw-bold text-black">
+        <tr>
+          <td class="fw-bold" style="width: 40%">받는 사람</td>
+          <td class="fw-bold text-end" th:text="${myOrders.user.name}"></td>
+        </tr>
+
+        <tr>
+          <td class="fw-bold">연락처</td>
+          <td class="fw-bold text-end" th:text="${myOrders.user.phone}"></td>
+        </tr>
+
+        <tr>
+          <td class="fw-bold">주소</td>
+          <td class="fw-bold text-end" th:text="${myOrders.address.roadAddress + ' ' + myOrders.address.detailAddress}"></td>
+        </tr>
+
+        <tr>
+          <td class="fw-bold" style="width: 40%">요청 사항</td>
+          <td class="fw-bold text-end" th:text="${myOrders.note}"></td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!--결제 정보-->
+  <section class="mt-3">
+    <div class="container">
+      <h5 class="fw-bold mt-4" style="color: #5AAB6F;">결제 정보</h5>
+    </div>
+    <div class="container bg-white border">
+      <table class="table table-borderless mb-2 fw-bold text-black">
+        <tr>
+          <td class="fw-bold">총 상품금액</td>
+          <td class="fw-bold text-end" th:text="${#numbers.formatInteger(myOrders.actualPrice, 0, 'COMMA')} + '원'"></td>
+        </tr>
+
+        <tr>
+          <td class="fw-bold">총 배송비</td>
+          <td class="fw-bold text-end">0원</td>
+        </tr>
+
+        <tr>
+          <td class="fw-bold">포인트 할인 금액</td>
+          <td class="fw-bold text-end" th:text="'-' + ${myOrders.pointsUsed == null ? '0' : #numbers.formatInteger(myOrders.pointsUsed, 0, 'COMMA')} + '원'"></td>
+        </tr>
+
+        <tr>
+          <td class="fw-bold">쿠폰 할인 금액</td>
+          <td class="fw-bold text-end"
+              th:text="${myOrders.finalDiscountAmount == null and myOrders.finalDiscountRate == null ? '0' : (myOrders.finalDiscountAmount == null ? '-' + #numbers.formatInteger(myOrders.getFinalDiscountRate() * 0.01 * myOrders.actualPrice, 0, 'COMMA') + '원' : '-' + #numbers.formatInteger(myOrders.finalDiscountAmount, 0, 'COMMA') + '원')}"></td>
+        </tr>
+
+        <tr>
+          <td class="fw-bold fs-5" style="color: red;">총 결제 금액</td>
+          <td class="fw-bold fs-5 text-end" style="color: red;" th:text="${#numbers.formatInteger(myOrders.finalPrice, 0, 'COMMA')} + '원'"></td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!--버튼-->
+  <section class="mt-3">
+    <div class="container mb-1">
+      <button onclick="history.back()" class="btn btn-secondary fw-bold" style="border-radius: 1%; width: 100%;">목&nbsp;&nbsp;&nbsp;록</button>
+    </div>
+  </section>
+</main>
+</body>
+</html>

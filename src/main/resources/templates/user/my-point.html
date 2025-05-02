@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>My Points</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+
+  <!--총 리워드-->
+  <section class="fixed-top">
+    <div class="row py-3 px-5" style="background-color: #C6E7CE;">
+      <p class="fs-6 mt-3 fw-bold text-center">보유</p>
+      <h1 class="me-auto fw-bold text-center" th:text="${#numbers.formatInteger(sum.point, 0, 'COMMA')} + 'p'"></h1>
+      <!--리워드 안내사항 Start-->
+      <div>
+        <button class="mt-4 btn btn-light mb-1 fw-bold" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+          리워드 안내사항
+        </button>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-lg p-0 border-0">
+          <div class="border-bottom p-3 justify-content-between align-items-center">
+            <h5 class="mb-3 fw-bold">리워드 안내사항</h5>
+            <p class="mb-1 small"><span style="color: #5AAB6F;">1.</span> 포인트는 상품을 구매할 때만 사용할 수 있습니다.</p>
+            <p class="mb-1 small"><span style="color: #5AAB6F;">2.</span> 포인트는 현금으로 교환 할 수 없습니다.</p>
+            <p class="mb-1 small"><span style="color: #5AAB6F;">3.</span> 환불 시 포인트는 재지급 됩니다.</p>
+            <p class="mb-1 small"><span style="color: #5AAB6F;">4.</span> 포인트의 유효기간은 <span class="fw-bold">1년</span>입니다.</p>
+          </div>
+
+          <div class="border-top px-5 py-4 text-center">
+            <a class="text-decoration-none fw-bold" href="#!" style="color: #5AAB6F;;">확 인</a>
+          </div>
+        </div>
+      </div>
+      <!--리워드 안내사항 End-->
+    </div>
+  </section>
+
+  <section class="border-top container-fluid" style="margin-top: 35px">
+    <table class="table table-hover table-borderless">
+      <tr style="height: 50px" th:each="pointlog, stat: ${myPoints}">
+        <td class="fw-bold" th:text="(${stat.index == 0} or ${myPoints[stat.index].createdAt.toLocalDate() != myPoints[stat.index - 1].createdAt.toLocalDate()}) ? ${pointlog.createdAt.toLocalDate()} : ''"></td>
+
+        <td class="fw-bold border-top border-bottom" th:style="'color: ' + (${pointlog.newPoint > pointlog.oldPoint} ? '#5AAB6F' : 'gray')" style="color: #5AAB6F" th:text="${pointlog.newPoint > pointlog.oldPoint ? '적립' : '사용'}"></td>
+
+        <td class="fw-bold text-end border-top border-bottom" th:style="'color: ' + (${pointlog.newPoint > pointlog.oldPoint} ? '#5AAB6F' : 'gray')"
+            th:text="${pointlog.newPoint > pointlog.oldPoint ? '+' + (pointlog.newPoint - pointlog.oldPoint) + 'p' : (pointlog.newPoint - pointlog.oldPoint) + 'p'}"></td>
+      </tr>
+    </table>
+  </section>
+</main>
+</body>
+</html>

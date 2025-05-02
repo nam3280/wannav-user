@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html th:fragment="layout(content)" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <link href="/assets/libs/slick-carousel/slick/slick.css" th:href="@{/assets/libs/slick-carousel/slick/slick.css}" rel="stylesheet" />
+  <link href="/assets/libs/slick-carousel/slick/slick-theme.css" th:href="@{/assets/libs/slick-carousel/slick/slick-theme.css}" rel="stylesheet" />
+  <link href="/assets/libs/tiny-slider/dist/tiny-slider.css" th:href="@{/assets/libs/tiny-slider/dist/tiny-slider.css}" rel="stylesheet">
+  <link href="../assets/libs/nouislider/dist/nouislider.min.css" th:href="@{/assets/libs/nouislider/dist/nouislider.min.css}" rel="stylesheet">
+
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta content="Codescandy" name="author">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-M8S4MT3EYG');
+  </script>
+
+
+
+
+  <!-- Favicon icon-->
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico" th:href="@{/assets/images/favicon/favicon.ico}">
+
+
+  <!-- Libs CSS -->
+  <link href="/assets/libs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" th:href="@{/assets/libs/bootstrap-icons/font/bootstrap-icons.css}">
+  <link href="/assets/libs/feather-webfont/dist/feather-icons.css" rel="stylesheet" th:href="@{/assets/libs/feather-webfont/dist/feather-icons.css}">
+  <link href="/assets/libs/simplebar/dist/simplebar.min.css" rel="stylesheet" th:href="@{/assets/libs/simplebar/dist/simplebar.min.css}">
+
+
+  <!-- Theme CSS -->
+  <link rel="stylesheet" href="/assets/css/theme.min.css" th:href="@{/assets/css/theme.min.css}">
+
+    <style>
+      .horizontal-center {
+            display: flex;
+            justify-content: center; /* 가로 방향으로 가운데 정렬 */
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+       }
+
+
+      .nav {
+            display: flex;
+            margin-left: auto;
+       }
+
+      .header-nav {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 1rem;
+       }
+
+       .desktop-header-nav-item {
+            padding: 0.5rem 5rem;
+            margin-left: 0.25rem;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        /* 호버 효과 */
+        .desktop-header-nav-item:hover {
+            color: #7BCC65; /* 더 진한 연두색 */
+        }
+
+      .mobile-header-nav-item {
+            padding: 0.5rem 1.8rem;
+            margin-left: 0.25rem;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        /* 호버 효과 */
+        .mobile-header-nav-item:hover {
+            color: #7BCC65; /* 더 진한 연두색 */
+        }
+
+      .wrapper {
+            position: sticky;
+            top: 0;
+            width: 100%;
+	          z-index: 100;
+	          background-color: #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+
+<!--header-->
+<div class="border-bottom wrapper ">
+
+  <div class="py-1">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-12 text-center text-md-start align-items-center"><span></span>
+        </div>
+        <div class="col-6 text-end d-none d-md-block">
+          <div>
+            <a href="/auth/login">로그인</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="py-4 pt-lg-3 pb-lg-0">
+    <div class="container">
+      <div class="row w-100 align-items-center gx-lg-2 gx-0">
+        <div class="col-xxl-2 col-lg-3">
+          <a class="navbar-brand d-none d-lg-block" href="/">
+            <img th:src="@{/media/logo/removebg-logo-horizontal.svg}" style="width:160px; height: 80px;" alt="eCommerce HTML Template">
+          </a>
+          <div class="d-flex justify-content-between w-100 d-lg-none">
+            <a class="navbar-brand" href="/">
+              <img th:src="@{/media/logo/removebg-logo-horizontal.svg}" style="width:150px; height: 50px;" alt="eCommerce HTML Template">
+            </a>
+
+            <div class="d-flex align-items-center lh-1">
+              <div class="list-inline me-4">
+                <!--하트 이모티콘-->
+                <div class="list-inline-item">
+                  <a href="/likes"
+                     class="text-muted position-relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round"
+                         class="feather feather-heart">
+                      <path
+                              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                      </path>
+                    </svg>
+                  </a>
+                </div>
+
+                <!-- 사람 이모티콘 -->
+                <div class="list-inline-item">
+                  <a class="text-muted position-relative" href="/my">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round"
+                         class="feather feather-user">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </a>
+                </div>
+
+                <!-- 장바구니 이모티콘-->
+                <div class="list-inline-item">
+                  <a class="text-muted position-relative" href="/carts">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round"
+                         class="feather feather-shopping-bag">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!--검색 바(데스크탑)-->
+        <div class="col-xxl-9 col-lg-5 d-lg-block d-none">
+          <form action="/restaurants" th:action="@{/restaurants}" method="get"  >
+            <div class="input-group ">
+
+              <input class="form-control rounded"  name="search" type="search" placeholder="식당명 혹은 지역명을 검색하세요">
+              <span class="input-group-append">
+                  <button class="btn bg-white border border-start-0 ms-n10 rounded-0 rounded-end" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-search">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </button>
+                </span>
+            </div>
+          </form>
+        </div>
+
+
+
+
+        <!-- 찜+ 장바구니 + 마이페이지 이동 버튼 영역 크기 조절 관련 -->
+        <div class="col-md-2 col-xxl-1 text-end d-none d-lg-block">
+          <!-- 찜 + 장바구니 + 마이페이지 이동 버튼 영역-->
+          <div class="list-inline">
+            <!--찜 목록 하트 버튼 , 이것도 모바일 데스크탑 UI 공통-->
+            <div class="list-inline-item">
+              <a href="/likes"
+                 class="text-muted position-relative">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round"
+                     class="feather feather-heart">
+                  <path
+                          d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                  </path>
+                </svg>
+              </a>
+            </div>
+
+            <!--마이페이지 버튼 , 모바일 데스크탑 UI 공통-->
+            <div class="list-inline-item">
+
+              <a class="text-muted position-relative" href="/my">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round"
+                     class="feather feather-user">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </a>
+            </div>
+
+            <!-- 장바구니 모바일 데스크탑 UI 공통-->
+            <div class="list-inline-item">
+              <a class="text-muted position-relative" href="/carts">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round"
+                     class="feather feather-shopping-bag">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <nav>
+    <!--검색 바(모바일)-->
+    <div class="d-lg-none d-block">
+      <form action="/restaurants" th:action="@{/restaurants}" method="get"  >
+        <div class="input-group ">
+
+          <input class="form-control rounded"  name="search" type="search" placeholder="식당명 혹은 지역명을 검색하세요">
+          <span class="input-group-append">
+                  <button class="btn bg-white border border-start-0 ms-n10 rounded-0 rounded-end" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-search">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </button>
+                </span>
+        </div>
+      </form>
+    </div>
+
+
+    <!--데스크탑 네비게이션 바-->
+    <div class="d-none d-lg-block">
+      <ul class="horizontal-center">
+        <li class="nav-item desktop-header-nav-item">
+          <a class="nav-link" href="/restaurants" role="button">식당</a>
+        </li>
+
+        <li class="nav-item desktop-header-nav-item">
+          <a class="nav-link" href="/products" role="button">상점</a>
+        </li>
+
+        <li class="nav-item desktop-header-nav-item">
+          <a class="nav-link" href="/promotion/events" role="button">이벤트</a>
+        </li>
+      </ul>
+
+
+    </div>
+
+
+    <!--모바일 네비게이션 바-->
+    <div class="d-block d-lg-none">
+
+      <ul class="horizontal-center">
+        <li class="nav-item mobile-header-nav-item">
+          <a class="nav-link" href="/restaurants" role="button">식당</a>
+        </li>
+
+        <li class="nav-item mobile-header-nav-item">
+          <a class="nav-link" href="/products" role="button">상점</a>
+        </li>
+
+        <li class="nav-item mobile-header-nav-item">
+          <a class="nav-link" href="/promotion/events" role="button">이벤트</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+</div>
+
+
+<div th:replace="${content}"></div>
+
+
+<footer class="footer" style="background-color: #FFFFFF; margin-top: 10px;">
+  <div class="container">
+    <div class="py-4">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p class="small text-muted">Copyright 2024 © WannaV eCommerce. All rights reserved.</p>
+          <p class="small text-muted">상호명 및 호스팅 서비스 제공: WannaV(주)</p>
+          <p class="small text-muted">서울시 강남구 삼성로 534 SAC 아트홀 6층</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<!-- Javascript-->
+<script src="../assets/libs/nouislider/dist/nouislider.min.js" th:src="@{/assets/libs/nouislider/dist/nouislider.min.js}"></script>
+<script src="../assets/libs/wnumb/wNumb.min.js" th:src="@{/assets/libs/wnumb/wNumb.min.js}"></script>
+
+<!-- Libs JS -->
+<script src="../static/assets/libs/jquery/dist/jquery.min.js" th:src="@{/assets/libs/jquery/dist/jquery.min.js}"></script>
+<script src="../static/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js" th:src="@{/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<script src="../static/assets/libs/simplebar/dist/simplebar.min.js" th:src="@{/assets/libs/simplebar/dist/simplebar.min.js}"></script>
+
+<!-- Theme JS -->
+<script src="../static/assets/js/theme.min.js" th:src="@{/assets/js/theme.min.js}"></script>
+<script src="../static/assets/libs/jquery-countdown/dist/jquery.countdown.min.js" th:src="@{/assets/libs/jquery-countdown/dist/jquery.countdown.min.js}"></script>
+<script src="../static/assets/js/vendors/countdown.js" th:src="@{/assets/js/vendors/countdown.js}"></script>
+<script src="../static/assets/libs/slick-carousel/slick/slick.min.js" th:src="@{/assets/libs/slick-carousel/slick/slick.min.js}"></script>
+<script src="../static/assets/js/vendors/slick-slider.js" th:src="@{/assets/js/vendors/slick-slider.js}"></script>
+<script src="../static/assets/libs/tiny-slider/dist/min/tiny-slider.js" th:src="@{/assets/libs/tiny-slider/dist/min/tiny-slider.js}"></script>
+<script src="../static/assets/js/vendors/tns-slider.js" th:src="@{/assets/js/vendors/tns-slider.js}"></script>
+<script src="../static/assets/js/vendors/zoom.js" th:src="@{/assets/js/vendors/zoom.js}"></script>
+<script src="../static/assets/js/vendors/increment-value.js" th:src="@{/assets/js/vendors/increment-value.js}"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Review Write</title>
+  <style>
+
+    .errorMessage{
+      color: #ff4238;
+      font-size: 15px;
+    }
+
+    h4 {
+      margin-top: 15px !important;
+    }
+
+    .contents {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .contents .upload-box {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contents .upload-box .drag-file {
+      position: relative;
+      height: 1px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contents .upload-box .drag-file .image {
+      width: 40px;
+    }
+
+    .contents .upload-box .drag-file .message {
+      margin-bottom: 0;
+    }
+
+    .contents .upload-box .drag-file .preview {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 200%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .contents .upload-box .file {
+      display: none;
+    }
+
+    .preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      margin-top: 3px;
+    }
+
+    .preview-container img {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      border-radius: 7px;
+    }
+
+    .starpoint_wrap{display:inline-block;}
+    .starpoint_box{position:relative;background:url(https://ido-archive.github.io/svc/etc/element/img/sp_star.png) 0 0 no-repeat;font-size:0;}
+    .starpoint_box .starpoint_bg{display:block;position:absolute;top:0;left:0;height:18px;background:url(https://ido-archive.github.io/svc/etc/element/img/sp_star.png) 0 -20px no-repeat;pointer-events:none;}
+    .starpoint_box .label_star{display:inline-block;width:10px;height:18px;box-sizing:border-box;}
+    .starpoint_box .star_radio{opacity:0;width:0;height:0;position:absolute;}
+    .starpoint_box .star_radio:nth-of-type(1):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(1):checked ~ .starpoint_bg{width:10%;}
+    .starpoint_box .star_radio:nth-of-type(2):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(2):checked ~ .starpoint_bg{width:20%;}
+    .starpoint_box .star_radio:nth-of-type(3):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(3):checked ~ .starpoint_bg{width:30%;}
+    .starpoint_box .star_radio:nth-of-type(4):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(4):checked ~ .starpoint_bg{width:40%;}
+    .starpoint_box .star_radio:nth-of-type(5):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(5):checked ~ .starpoint_bg{width:50%;}
+    .starpoint_box .star_radio:nth-of-type(6):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(6):checked ~ .starpoint_bg{width:60%;}
+    .starpoint_box .star_radio:nth-of-type(7):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(7):checked ~ .starpoint_bg{width:70%;}
+    .starpoint_box .star_radio:nth-of-type(8):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(8):checked ~ .starpoint_bg{width:80%;}
+    .starpoint_box .star_radio:nth-of-type(9):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(9):checked ~ .starpoint_bg{width:90%;}
+    .starpoint_box .star_radio:nth-of-type(10):hover ~ .starpoint_bg,
+    .starpoint_box .star_radio:nth-of-type(10):checked ~ .starpoint_bg{width:100%;}
+
+    .blind{position:absolute;clip:rect(0 0 0 0);margin:-1px;width:1px;height: 1px;overflow:hidden;}
+
+    </style>
+
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <!--예약한 식당 정보-->
+  <div class="container">
+    <h3 class="mt-12 fw-bold text-center">예약하신 식당 어떠셨나요?</h3><br>
+  </div>
+  <form th:method="post" th:action="@{/reviews/{id}/update(id=${reviewInfo.id})}" th:object="${reviewUpdateDTO}"  enctype="multipart/form-data">
+  <input type="hidden" th:name="id" th:value="${reviewInfo.id}">
+  <div class="container border bg-white">
+    <table class="table table-borderless mb-0 fw-bold text-black text-center fs-5">
+      <tr>
+        <td class="d-flex justify-content-center">
+          <p style="color: #5AAB6F;" th:text="${reviewInfo.visitDate}"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="d-flex justify-content-center">
+          <p style="color: #5AAB6F;" th:text="${reviewInfo.restaurant.name}"></p>
+          <p>&nbsp;방문하셨어요</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+    <!--평점-->
+    <div class="container border mt-3 text-center bg-white">
+      <h4 class="fw-bold text-center">평점을 선택해주세요.</h4>
+      <p class="errorMessage" th:errors="*{rating}"></p><br>
+
+      <div class="starpoint_wrap">
+        <div class="starpoint_box mb-5" style="transform: scale(1.6)">
+          <label class="label_star"></label>
+          <label for="starpoint_2" class="label_star" title="1"><span class="blind">1점</span></label>
+          <label class="label_star"></label>
+          <label for="starpoint_4" class="label_star" title="2"><span class="blind">2점</span></label>
+          <label class="label_star"></label>
+          <label for="starpoint_6" class="label_star" title="3"><span class="blind">3점</span></label>
+          <label class="label_star"></label>
+          <label for="starpoint_8" class="label_star" title="4"><span class="blind">4점</span></label>
+          <label class="label_star"></label>
+          <label for="starpoint_10" class="label_star" title="5"><span class="blind">5점</span></label>
+          <input class="star_radio">
+          <input type="radio" id="starpoint_2" class="star_radio" value="1" th:field="${reviewUpdateDTO.rating}">
+          <input class="star_radio">
+          <input type="radio" id="starpoint_4" class="star_radio" value="2" th:field="${reviewUpdateDTO.rating}">
+          <input class="star_radio">
+          <input type="radio" id="starpoint_6" class="star_radio" value="3" th:field="${reviewUpdateDTO.rating}">
+          <input class="star_radio">
+          <input type="radio" id="starpoint_8" class="star_radio" value="4" th:field="${reviewUpdateDTO.rating}">
+          <input class="star_radio">
+          <input type="radio" id="starpoint_10" class="star_radio" value="5" th:field="${reviewUpdateDTO.rating}">
+          <span class="starpoint_bg"></span>
+        </div>
+      </div>
+    </div>
+
+    <!--내용-->
+    <div class="container border mt-3 text-center bg-white">
+      <div class="d-flex justify-content-center align-items-center">
+        <h4 class="fw-bold text-center">솔직한 식당 리뷰를 남겨주세요.</h4><br>
+
+        <!--리뷰 작성 가이드 Start-->
+        <div>
+          <a class="position-relative btn-icon btn-ghost-secondary btn ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16" style="color: #5AAB6F">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+            </svg>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end dropdown-menu-lg p-0 border">
+            <div class="border p-3 align-items-center">
+              <h5 class="mb-3 fw-bold">리뷰 작성 가이드</h5>
+              <p class="mb-0 small">Wanna V는 믿을 수 있는 리뷰 서비스를 위해</p>
+              <p class="mb-3 small">다음과 같은 작성 기준을 가지고 있습니다.</p>
+              <p class="mb-1 small"><span style="color: #5AAB6F;">1.</span> 리뷰 양식에 맞춰 내용을 충분히 작성해주세요.</p>
+              <p class="mb-1 small"><span style="color: #5AAB6F;">2.</span> 글자 수를 채우기 위해 같은 내용을 반복하지 말아주세요.</p>
+              <p class="mb-1 small"><span style="color: #5AAB6F;">3.</span> 직접 촬영하신 사진만 첨부해주세요.</p>
+              <p class="mb-1 small"><span style="color: #5AAB6F;">4.</span> 욕설 및 비속어가 포함되지 않도록 내용을 작성해주세요.</p>
+              <p class="mb-1 small"><span style="color: #5AAB6F;">5.</span> 명예훼손, 도용 등 우려되는 내용이 포함되지 않도록 주의해주세요.</p>
+              <p class="mb-3 small"><span style="color: #5AAB6F;">6.</span> 리워드는 리뷰 작성 후 <mark style="background-color: #C6E7CE;">7일 이내</mark> 지급돼요.</p>
+              <p class="mb-0 small">정책에 맞지 않는 리뷰는 자체 알고리즘을 통해</p>
+              <p class="mb-0 small">별도의 안내 없이 즉시 블라인드 처리됩니다!</p>
+            </div>
+
+            <div class="border-top px-2 py-3 text-center">
+              <a href="#!" class="text-decoration-none fw-bold" style="color: #5AAB6F;">확 인
+              </a>
+            </div>
+          </div>
+        </div>
+        <!--리뷰 작성 가이드 End-->
+      </div>
+
+      <p class="errorMessage d-block" th:errors="*{content}"></p>
+      <textarea class="form-control justify-content-center mb-3" id="textarea" style="resize: none; width: 100%;" rows="5" maxlength="1000"
+                placeholder="식당에 대한 솔직한 리뷰를 작성해주세요. (10글자 이상)" th:field="${reviewUpdateDTO.content}"></textarea>
+    </div>
+
+    <!--사진-->
+    <div class="container border mt-3 bg-white">
+      <div class="d-flex justify-content-center align-items-center">
+        <h4 class="fw-bold text-center">사진을 추가해주세요.</h4>
+        <h3>
+          <label class="ms-1" for="chooseFile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square ms-2" viewBox="0 0 16 16" style="color: #5AAB6F">
+              <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+          </label>
+        </h3>
+      </div>
+
+      <div class="contents mb-5">
+        <div class="upload-box">
+          <div id="drop-file" class="drag-file">
+            <input class="file" id="chooseFile" th:name="files" type="file" multiple onchange="dropFile.handleFiles(this.files)" accept="image/png, image/jpeg, image/gif">
+          </div>
+          <div id="file-previews" class="preview-container"><!--미리보기--></div>
+        </div>
+      </div>
+    </div>
+
+    <!--태그-->
+    <div class="container border mt-3 bg-white">
+      <div class="text-center">
+        <h4 class="fw-bold text-center">태그를 선택해주세요.</h4>
+        <h6 class="text-secondary text-center">최대 5개의 태그를 선택해주세요.</h6>
+      </div>
+
+      <div th:each="tag, stat: ${tagsAll}">
+        <p class="fw-bold text-success text-center mt-2 border-top" th:if="${stat.index == 0} or ${tagsAll[stat.index - 1].category != tagsAll[stat.index].category}" th:text="${tag.category}"></p>
+
+        <div class="d-flex justify-content-center mb-2">
+          <input type="checkbox" class="btn-check" autocomplete="off" th:id="${tag.name}" th:name="tagNames" th:value="${tagsAll[stat.index].name}">
+          <label class="btn btn-outline-success" style="font-size: 13px" th:for="${tag.name}" th:text="${tag.name}"></label>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 mb-4 d-flex justify-content-end">
+      <button class="btn btn-secondary me-2" onclick="history.back()">뒤로</button>
+      <button type="submit" class="btn btn-success">작성 완료</button>
+    </div>
+  </form>
+
+  <script>
+    function DropFile(dropAreaId, fileListId) {
+      let dropArea = document.getElementById(dropAreaId);
+      let previewContainer = document.getElementById(fileListId);
+      let chooseFile = document.getElementById('chooseFile');
+      const MAX_FILES = 3;
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function highlight(e) {
+        preventDefaults(e);
+        dropArea.classList.add("highlight");
+      }
+
+      function unhighlight(e) {
+        preventDefaults(e);
+        dropArea.classList.remove("highlight");
+      }
+
+      function handleDrop(e) {
+        unhighlight(e);
+        let dt = e.dataTransfer;
+        let files = dt.files;
+
+        handleFiles(files);
+
+        const fileList = document.getElementById(fileListId);
+        if (fileList) {
+          fileList.scrollTo({ top: fileList.scrollHeight });
+        }
+      }
+
+      function handleFiles(files) {
+        previewContainer.innerHTML = ''
+        files = [...files];
+
+        if (files.length > MAX_FILES) {
+          alert(`최대 ${MAX_FILES}개의 파일만 업로드할 수 있습니다.`);
+          files.length = 0;
+          chooseFile.value = null;
+          return;
+        }
+        files.forEach(previewFile);
+      }
+
+      function previewFile(file) {
+        renderFile(file);
+      }
+
+      function renderFile(file) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+          let img = document.createElement("img");
+          img.src = reader.result;
+          img.alt = file.name;
+          previewContainer.appendChild(img);
+        };
+      }
+
+      dropArea.addEventListener("dragenter", highlight, false);
+      dropArea.addEventListener("dragover", highlight, false);
+      dropArea.addEventListener("dragleave", unhighlight, false);
+      dropArea.addEventListener("drop", handleDrop, false);
+
+      return {
+        handleFiles
+      };
+    }
+    const dropFile = new DropFile("drop-file", "file-previews");
+  </script>
+
+  <script th:inline="javascript">
+    const alertMessage = [[${alertMessage}]];
+    if (alertMessage) {
+      alert(alertMessage);
+    }
+  </script>
+</main>
+</body>
+</html>

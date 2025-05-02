@@ -1,0 +1,94 @@
+.card {
+  padding: 1rem;
+  background-color: #ffffff;
+  border:none;
+  border-radius: 0
+}
+
+.card h5{
+  font-size: 12px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 10px;
+}
+
+h4{
+  margin-bottom: 10px;
+}
+
+.toss{
+  background-color: #ffffff;
+  padding: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000000 !important;
+  border-radius: 5px;
+}
+
+.toss.select {
+  background-color: #ebedef;
+  border: 1px solid #000000;
+  transition-duration: 0.1s;
+}
+
+.pay{
+  margin-top: 10px;
+  padding: 0.5rem;
+  background-color: #5AAB6F;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pay p {
+  color: #ffffff;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  font-size: 15px;
+  padding-bottom: 0%
+}
+
+.content-payment{
+  padding: 1rem;
+  padding-top: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.button-payment{
+  border: 0 solid;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #5AAB6F;
+}
+
+.button-payment:active{
+  background-color: #86ce99;
+  color: #ffffff;
+}
+
+.button-payment:focus {
+  color: #ffffff;
+  outline: none;
+}
+
+.button-payment:focus:not(:active) {
+  background-color: #ffffff;
+  color: #5AAB6F;
+}
+
+a:focus, a:active, a:link, a:visited, button:focus, button:active {
+  border: none;
+}
+
+.button-payment:disabled {
+  background-color: #adb5bd;
+  color: #ebedef;
+  cursor: not-allowed;
+}

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html th:replace="~{fragment/layout_v1.html :: layout(~{::main})}" xmlns:th="http://www.thymeleaf.org">
+
+
+<main>
+
+  <style>
+    .abc{
+      position: fixed;
+      left: 10%; /* 왼쪽 여백 */
+      top: -25%; /* 부모 요소에 대한 상대적 위치 지정 , 50%면 부모 컨테이너의 상단에서부터 시작되어 중간지점까지 배치*/
+      transform: translateY(25%);
+
+    }
+  </style>
+
+  <section>
+    <!-- section -->
+    <div class="mt-8 mb-lg-14 mb-8">
+      <!-- container -->
+      <div class="container">
+
+        <!-- 메인 컨텐츠 헤더 -->
+
+        <!-- 중제목 영역-->
+        <div>
+          <!-- 데스크탑 중제목 -->
+          <div class="card-body d-none d-lg-block">
+            <h3 class="mb-0 fs-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;식당</h3>
+          </div>
+
+        <!-- 모바일 중제목-->
+          <div class="card-body d-block d-lg-none">
+            <h3 class="mb-0 fs-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;식당</h3>
+          </div>
+          </div>
+
+
+        <div class="row gx-10">
+
+
+          <!-- aside : 필터 관련 모든 것 -->
+          <aside class="col-lg-3 col-md-4 mb-6 mb-md-0">
+            <div class="offcanvas offcanvas-start offcanvas-collapse w-md-50 " tabindex="-1" id="offcanvasCategory" aria-labelledby="offcanvasCategoryLabel">
+
+
+              <!-- 필터 영역-->
+              <div class="offcanvas-header d-lg-none d-block d-flex justify-content-start ">
+                <h5 class="offcanvas-title" id="offcanvasCategoryLabel">필터</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+
+              <!-- 실제 필터링 영역-->
+              <div class="offcanvas-body ps-lg-2 pt-lg-0">
+                <div class="mb-8 d-none d-lg-block">
+                  <h5 class="mb-3" >필터</h5>
+                  <hr>
+                </div>
+
+
+
+                  <!-- form check -->
+                <form th:object="${restaurantSearchCond}" th:action method="get">
+
+                  <div class="mb-8">
+                    <h5 class="mb-3">정렬 조건</h5>
+
+                    <th:block class="mb-2" th:each="sortCondition : ${sortConditions}">
+                      <input th:field="*{sortConditions}" class="btn-check p-2" type="radio"  th:value="${sortCondition.key}">
+                      <label class="btn btn-outline-primary p-2" th:for="${#ids.prev('sortConditions')}" th:text="${sortCondition.value}"></label>
+                    </th:block>
+
+                  </div>
+
+
+
+                  <div class="mb-8">
+                    <h5 class="mb-3">포함 음식</h5>
+                    <div class="form-check mb-2" th:each="containFoodType : ${containFoodTypes}">
+                      <input class="form-check-input" type="checkbox" th:field="*{containFoodTypes}" th:value="${containFoodType.description}" >
+                      <label th:for="${#ids.prev('containFoodTypes')}" th:text="${containFoodType.description}" class="form-check-label">
+                        유제품
+                      </label>
+                    </div>
+                  </div>
+
+
+
+
+
+
+                  <div class="mb-8">
+                    <!-- price -->
+                    <h5 class="mb-3">평균 가격대</h5>
+                    <div>
+                      <!-- range -->
+                      <div id="priceRange" class="mb-3"></div>
+                      <small class="text-muted">평균 가격대:</small> <span id="priceRange-value" class="small"></span>
+                      <!-- Hidden inputs to store minimum and maximum values -->
+                      <input type="hidden" th:field="*{startPrice}" th:value="*{startPrice}">
+                      <input type="hidden" th:field="*{endPrice}" th:value="*{endPrice}">
+
+                    </div>
+                  </div>
+
+
+                  <div class="mb-8">
+                    <h5 class="mb-3">영업 중 여부</h5>
+                    <!-- form check -->
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" th:field="*{isOpen}" >
+                      <label class="form-check-label" th:text="|영업 중|" th:for="${#ids.prev('isOpen')}">영업 중</label>
+                    </div>
+                  </div>
+
+
+                  <div class="mb-8">
+                    <h5 class="mb-3">주차 가능 여부</h5>
+                    <!-- form check -->
+                    <div class="form-check mb-2">
+                      <!-- input -->
+                      <input class="form-check-input" type="checkbox" th:field="*{canPark}"  checked>
+                      <label class="form-check-label" th:for="${#ids.prev('canPark')}" th:text="|주차 가능|">
+                        주차 가능
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="mb-8">
+                    <h5 class="mb-3">식당 분류</h5>
+                    <!-- form check -->
+                    <div class="form-check mb-2" th:each="restaurantType : ${restaurantTypes}">
+                      <!-- input -->
+                      <input class="form-check-input" type="checkbox" th:field="*{restaurantTypes}" th:value="${restaurantType.description}"  checked>
+                      <label class="form-check-label" th:for="${#ids.prev('restaurantTypes')}" th:text="${restaurantType.description}">
+                        한식
+                      </label>
+                    </div>
+                  </div>
+
+
+                  <div class="mb-8">
+                    <h5 class="mb-3">제공하는 서비스</h5>
+                    <!-- form check -->
+                    <div class="form-check mb-2" th:each="provideServiceType : ${provideServiceTypes}">
+                      <!-- input -->
+                      <input class="form-check-input" type="checkbox" th:field="*{provideServiceTypes}" th:value="${provideServiceType.description}"  checked>
+                      <label class="form-check-label" th:for="${#ids.prev('provideServiceTypes')}" th:text="${provideServiceType.description}">
+                        콜키지 가능
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="mb-8">
+                    <h5 class="mb-3">분위기</h5>
+                    <!-- form check -->
+                    <div class="form-check mb-2" th:each="moodType : ${moodTypes}">
+                      <!-- input -->
+                      <input class="form-check-input" type="checkbox" th:field="*{moodTypes}" th:value="${moodType.description}"  checked>
+                      <label class="form-check-label" th:for="${#ids.prev('moodTypes')}" th:text="${moodType.description}">
+                        콜키지 가능
+                      </label>
+                    </div>
+                  </div>
+                    <!-- enum은 DB와 키와 값 중 키로 서버 단에서 왔다갔다 하게 됨 , 값은 그저 사용자에게 보여주는 용도 ! -->
+
+
+                    <!-- rating -->
+                    <div class="mb-8">
+                      <h5 class="mb-3">평균 별점</h5>
+                      <div>
+                        <!-- form check -->
+                        <div class="form-check mb-2" th:each="rate : ${#numbers.sequence(1, 5)}"> <!-- 별점부터 해결하면 됨 , 별점 1,2,3,4,5 넘겨줄까 이것도 , 중첩 for문으로 별찍기문제마냥 해결-->
+                          <!-- input -->
+                          <input class="form-check-input" type="checkbox" th:field="*{rates}" th:value="${rate}"> <!-- 어차피 @ModelAttriubte에서 타입 컨버전 통해 String 으로 넘겨도 자동으로 Integer로 변환해서 할당해줌 -->
+                          <label class="form-check-label" th:for="${#ids.prev('rates')}">
+                            <!-- label 안에서 별 렌더링 -->
+                            <span th:each="filled : ${#numbers.sequence(1, rate)}">
+                              <i class="bi bi-star-fill text-warning"></i>
+                            </span>
+                            <span th:each="empty : ${#numbers.sequence(1, 5 - rate)}" th:if="${rate < 5}">
+                                <i class="bi bi-star text-warning"></i>
+                            </span>
+
+                          </label>
+                        </div>
+
+                      </div>
+                    </div>
+
+
+                  <button class="btn btn-outline-primary" th:text="검색하기" type="submit"></button>
+
+                </form>
+
+
+              </div>
+              <!--실제 필터링 영역 끝-->
+            </div>
+            <!-- 필터 영역-->
+          </aside>
+
+          <!-- 메인 컨텐츠 영역-->
+          <section class="col-lg-9 col-md-12 ">
+
+            <!-- 메인 정렬 및 페이징 -->
+            <div class="d-lg-flex justify-content-between align-items-center">
+              <div class="mb-3 mb-lg-0">
+                <p class="mb-0"> <span class="text-dark" th:text="|검색 결과 : ${restaurants.size()}개|">검색 결과 : 24개 </span></p>
+              </div>
+
+              <!-- icon -->
+              <div class="d-md-flex justify-content-between align-items-center">
+
+
+                <div class="d-flex mt-2 mt-lg-0 mb-3">
+
+                  <div class="ms-2 d-lg-none">
+                    <a class="btn btn-outline-gray-400 text-muted" data-bs-toggle="offcanvas" href="#offcanvasCategory" role="button" aria-controls="offcanvasCategory">
+                      <img src="/assets/images/filter_icon.png" th:src="@{/assets/images/filter/filter_icon.png}" style="width:1rem;height:1rem">
+                    </a>
+                  </div>
+
+
+                </div>
+
+              </div>
+            </div>
+
+            <div id="map" style="width:100%;height:500px; "></div>
+
+
+
+            <!-- 메인 컨텐츠(식당 목록) -->
+            <div class="row g-4  row-cols-1 mt-2">
+
+              <!--각 칸마다 URI 지정 시 제목 a 태그와 사진 카드 영역 URI 두 개 지정해줘야됨-->
+              <div class="col" th:each="restaurant : ${restaurants}">
+                <!-- card -->
+                <div class="card card-product">
+                  <!-- card body -->
+                  <div class="card-body">
+                      <div class="col-md-8 col-12 flex-grow-1">
+                        <!-- heading -->
+                        <div class="d-flex justify-content-start"> <!--가로로 컴포넌트들을 배치-->
+                          <h2 class="fs-4"><a th:href="@{/restaurants/{id}(id = ${restaurant.id})}" th:text="${restaurant.name}" class="text-inherit text-decoration-none">음 이터리</a>
+                            </h2>
+                            <span class="text-muted ms-1" th:each="restaurantType : ${restaurant.restaurantTypes}" th:text="${restaurantType}">양식</span><!--어차피 여기서는 QueryDSL 관심 없음 이미 다 할당해와서 리스트에 박아놨기 때문 -->
+                        </div>
+                        <!-- address -->
+                        <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                          <i class="bi bi-geo-alt"></i><span class="ms-1" th:text="|${restaurant.address.roadAddress} ${restaurant.address.detailAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</span>
+                        </div>
+                        <div>
+                          <!-- 영업 중 , 브레이크타임 , 영업 종료 여부만 , 영업 시간은 상세에서 -->
+                          <span class="text-dark" th:text="${restaurant.businessStatus.description}">영업 중</span>
+                          <span class="text-muted small">&nbsp;・&nbsp;</span>
+                          <!-- rating -->
+                          <small class="text-warning"> <i class="bi bi-star-fill"></i></small><span class="text-muted small" th:text="|${#numbers.formatDecimal(restaurant.averageRating , 0 , 1)}(${restaurant.reviewCount})|">4.5(60)</span>
+                          <span class="text-muted small">&nbsp;・&nbsp;</span>
+                          <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${restaurant.likesCount}|">123</span>
+                        </div>
+
+                      </div>
+
+                    <!-- 가로 정렬이 필요한 부분에 row 하자 , align-items-center : 컴포넌트 중앙으로 배치-->
+                      <!-- col -->
+                      <div class="category-slider ">
+                        <div class="item" style="margin-left:0.1rem" th:each="image : ${restaurant.restaurantImages}">
+                          <a href="/restaurants/1" th:href="@{/restaurants/{id}(id = ${restaurant.id})}" class="text-decoration-none text-inherit">
+                          <div class="mb-lg-4">
+                            <div class="py-8">
+                              <img th:src="@{${image}}" style="width:30rem;height:22rem" class="mb-3">
+                            </div>
+                          </div>
+                          </a>
+                        </div>
+
+                      </div>
+
+                    <!-- card body 끝-->
+                    </div>
+
+                  </div>
+                </div>
+
+
+              </div>
+            <!-- 식당 목록 끝-->
+
+            <!-- row -->
+            <div class="row mt-8">
+              <div class="col">
+                <!-- nav -->
+                <nav>
+                  <ul class="pagination">
+                    <li class="page-item disabled">
+                      <a class="page-link  mx-1 " href="#" aria-label="Previous">
+                        <i class="feather-icon icon-chevron-left"></i>
+                      </a>
+                    </li>
+                    <li class="page-item "><a class="page-link  mx-1 active" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link mx-1 text-body" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link mx-1 text-body" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link mx-1 text-body" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link mx-1 text-body" href="#">...</a></li> <!--페이징 이 정도 더 추가하면 모바일 버전 오른쪽으로 침범함 -->
+                    <li class="page-item">
+                      <a class="page-link mx-1 text-body" href="#" aria-label="Next">
+                        <i class="feather-icon icon-chevron-right"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1820ddf0f285025d0105d85dfd07591c&libraries=services,clusterer,drawing"></script>
+  <script th:inline="javascript">
+    // 1. 서버에서 전달된 데이터를 JavaScript 변수에 저장
+    var restaurantData = [[${restaurants}]];
+
+
+    // 2. 카카오 맵 초기화
+    var mapContainer = document.getElementById('map'); // 지도를 표시할 div
+    var mapOption = {
+      center: new kakao.maps.LatLng(37.5665, 126.9780), // 지도의 중심좌표 (서울 기준)
+      level: 10 // 지도의 확대 레벨
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    var imageSrc = 'https://kr.object.ncloudstorage.com/wannav/marker_img/restaurant.png', // 마커이미지의 주소입니다
+            imageSize = new kakao.maps.Size(40, 45), // 마커이미지의 크기입니다
+            imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+    var bounds = new kakao.maps.LatLngBounds();
+
+    restaurantData.forEach(function(restaurant) {
+      var address = restaurant.address.roadAddress; // 도로명 주소
+      var restaurantName = restaurant.name; // 창고 이름
+
+      // 주소를 좌표로 변환하는 Geocoder
+      var geocoder = new kakao.maps.services.Geocoder();
+      // 주소를 좌표로 변환 후 마커 생성
+      geocoder.addressSearch(address, function(result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
+
+          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+          // 마커 생성
+          var marker = new kakao.maps.Marker({
+            map: map,
+            position: coords,
+            image: markerImage
+          });
+
+          // 마커 범위 추가
+          bounds.extend(coords);
+
+          // 커스텀 오버레이에 표시할 내용입니다
+// HTML 문자열 또는 Dom Element 입니다
+          var content = `
+                  <div class ="label">
+                  <span class="left"></span>
+                  <span class="center" style="
+      padding:5px;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      border: 2px solid black;
+
+    ">${restaurantName}</span>
+                  <span class="right"></span></div>`;
+
+
+// 커스텀 오버레이를 생성합니다
+          var customOverlay = new kakao.maps.CustomOverlay({
+            position: coords,
+            content: content
+          });
+
+// 커스텀 오버레이를 지도에 표시합니다
+          customOverlay.setMap(map);
+
+
+          // 마커 클릭 시 상세 페이지로 이동
+          kakao.maps.event.addListener(marker, 'click', function() {
+            window.location.href = '/restaurants/' + restaurant.id; // 상세 페이지 URL
+          });
+
+
+          // 마커가 지도 중심에 맞게 조정 (첫 번째 마커 기준)
+          // 마커를 모두 추가한 후에 중심을 맞춤
+          map.setBounds(bounds);
+        }
+      });
+    });
+  </script>
+</main>
+
+</html>

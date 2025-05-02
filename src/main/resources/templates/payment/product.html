@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/payment/product.css">
+  <script src="https://js.tosspayments.com/v2/standard"></script>
+  <script type="module" defer src="/js/payment/product.js"></script>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <title>Product Detail Page</title>
+  <script th:inline="javascript">
+    const pageInitData = [[${pageInitData}]];
+  </script>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <h3 class="page-title">주문 결제</h3>
+  <div class="info-container">
+    <p class="container-title">배송지</p>
+    <div class="delivery-container">
+      <p class="delivery-detail-container-title">받는 사람</p>
+      <div class="person-info-container detail-container">
+        <div class="input-container">
+          <input type="text" id="name-type" placeholder="" required/>
+          <label for="name-type">이름 *</label>
+        </div>
+        <div class="input-container">
+          <input type="number" id="phone-type" placeholder="" required/>
+          <label for="phone-type">연락처 *</label>
+        </div>
+      </div>
+      <div class="address-container">
+        <p class="delivery-detail-container-title">주소</p>
+        <button id="find-address-btn" class="btn btn-find-address">주소 찾기</button>
+      </div>
+      <div class="delivery-info-container detail-container">
+        <div class="input-container">
+          <input type="text" id="address" value="" readonly/>
+        </div>
+        <div class="input-container">
+          <input type="text" id="detail-address" placeholder=""  th:required="required"/>
+          <label for="detail-address" th:required="required">상세주소 *</label>
+        </div>
+      </div>
+      <div class="address-type-container detail-container">
+        <div class="input-container">
+          <input type="text" id="note" placeholder=""/>
+          <label for="note">요청 사항(선택)</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-container">
+    <p class="container-title">주문 상품</p>
+    <div class="product-container" id="product-container">
+      <!-- product list -->
+    </div>
+  </div>
+  <div class="info-container promotion-container">
+    <p class="container-title">할인 혜택</p>
+    <div class="coupon-container">
+      <div class="detail-container-header">
+        <div class="detail-container-title">쿠폰</div>
+        <button class="btn btn-select-coupon" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasCart"
+                aria-controls="offcanvasCart">
+          선택
+        </button>
+      </div>
+      <div class="applied-coupon-amount" id="applied-coupon-amount"></div>
+    </div>
+    <div class="point-container">
+      <div class="detail-container-header">
+        <div class="detail-container-title">포인트</div>
+        <span class="points-balance" id="points-balance"></span>
+      </div>
+      <div class="point-input-container">
+        <input type="text" name="used-points" id="used-points"
+               placeholder="0"/>
+        <span class="currency-label">원</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- toss 결제 영역 -->
+  <div class="info-container payment-container">
+    <div class="box_section">
+      <!-- 결제 UI -->
+      <div id="payment-method"></div>
+      <!-- 이용약관 UI -->
+      <div id="agreement"></div>
+    </div>
+    <div class="action-button" style="left: 0px;">
+      <div class="total-price">
+        <div>총</div>
+        <span id="final-payment-amount"></span>
+      </div>
+      <!-- 결제하기 버튼 -->
+      <button class="btn-payment" id="payment-button">결제</button>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart"
+         aria-labelledby="offcanvasCouponRightLabel">
+      <div class="offcanvas-header">
+        <h5 id="offcanvasCouponRightLabel">쿠폰</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="info-container offcanvas-coupon-container" id="coupon-container">
+          <!-- coupon list -->
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/product/products.css">
+  <script defer type="module" src="/js/product/products.js"></script>
+  <title>Product List Page</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <div class="category-list">
+    <ul class="category">
+      <li data-category="MK" class="category-item selected">밀키트</li>
+      <li data-category="C" class="category-item">화장품</li>
+      <li data-category="S" class="category-item">간식</li>
+    </ul>
+  </div>
+
+  <div class="product-grid" id="product-grid">
+    <div class="product-item" th:each="product : ${products}">
+      <a th:href="@{/products/{id}(id=${product.id})}">
+        <img th:src="@{${product.image}}" alt="Product image"/>
+        <div class="product-info-container">
+          <div class="product-price-container">
+            <span class="product-discount-rate" th:text="${product.discountRate} + '%'"></span>
+            <div class="price-container">
+              <span class="selling-price price" th:data-price="${product.sellingPrice}"></span>
+              <span class="final-price price" th:data-price="${product.finalPrice}"></span>
+            </div>
+          </div>
+          <p class="product-name name" th:data-name="${product.name}"></p>
+        </div>
+      </a>
+    </div>
+  </div>
+  <!--하단 고정 버튼-->
+  <section class="fixed-bottom" style="z-index: 100">
+    <ul class="list-unstyled d-flex justify-content-end mb-4 me-4">
+      <li>
+        <a class="btn-icon btn-ghost-secondary btn rounded-circle text-success"
+           data-bs-toggle="dropdown" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+               class="bi bi-plus-circle-fill" viewBox="0 0 16 16"
+               style="outline: none; border: none;">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" fill="#5AAB6F"/>
+            <path
+                d="M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"
+                fill="white"/>
+          </svg>
+        </a>
+        <div class="dropdown-menu dropdown-menu p-0">
+          <ul class="dropdown-menu mx-0 shadow d-block position-static">
+            <li>
+              <a class="dropdown-item d-flex gap-2 align-items-center" th:href="@{/upload-receipt}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-receipt-cutoff text-success" viewBox="0 0 16 16">
+                  <path
+                      d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
+                  <path
+                      d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z"/>
+                </svg>
+                영수증 리뷰쓰기
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex gap-2 align-items-center" th:href="@{/chatbot}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#5AAB6F"
+                     class="bi bi-chat-right-text-fill" viewBox="0 0 16 16">
+                  <path
+                      d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM3.5 3h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1"/>
+                </svg>
+                챗봇
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

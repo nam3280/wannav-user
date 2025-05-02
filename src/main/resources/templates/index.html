@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html th:replace="~{fragment/layout_v1.html :: layout(~{::main})}" xmlns:th="http://www.thymeleaf.org">
+
+<main>
+
+
+  <main>
+    <section class="mt-8 d-lg-block d-none">
+      <div class="container">
+        <div class="hero-slider">
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider1.png)no-repeat; background-size: cover; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-18">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider2.png)no-repeat; background-size: cover; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-18">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/%EB%8B%A8%EB%9D%BD%20%ED%85%8D%EC%8A%A4%ED%8A%B8.png)no-repeat; background-size: cover; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-18">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider1.png)no-repeat; background-size: cover; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-18">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider2.png)no-repeat; background-size: cover; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-18">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/%EB%8B%A8%EB%9D%BD%20%ED%85%8D%EC%8A%A4%ED%8A%B8.png)no-repeat; background-size: cover; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-18">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="mt-8 d-block d-lg-none">
+      <div class="container">
+        <div class="hero-slider">
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider1.png)no-repeat; background-size: contain; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-10" >
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider2.png)no-repeat; background-size: contain; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-10">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/%EB%8B%A8%EB%9D%BD%20%ED%85%8D%EC%8A%A4%ED%8A%B8.png)no-repeat; background-size: contain; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-14">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider1.png)no-repeat; background-size: contain; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-10">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/real-slider2.png)no-repeat; background-size: contain; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-10">
+            </div>
+          </div>
+
+          <div style="background: url(https://kr.object.ncloudstorage.com/wannav/banner_img/%EB%8B%A8%EB%9D%BD%20%ED%85%8D%EC%8A%A4%ED%8A%B8.png)no-repeat; background-size: contain; border-radius: .5rem; background-position: center;">
+            <div class="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center mb-14">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- 세번째 카테고리 슬라이드-->
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6 d-flex justify-content-start">
+            <h3 class="mb-0">가까운 곳에 위치한 식당</h3>
+            <form th:action method="get">
+              <!-- "현재 위치 갱신" 버튼 -->
+              <input type="hidden" name="address" value="서울 강남구">
+              <button type="submit" class="bi bi-arrow-clockwise" style="width:2rem;height:2rem;background-color:white;border:none;border-radius:15 " onclick="updateLocation()"></button>
+            </form>
+          </div>
+        </div>
+
+
+        <div class="category-slider ">
+          <div class="item mt-5"  th:each="currentLocationPopularRestaurant : ${currentLocationPopularRestaurants}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${currentLocationPopularRestaurant.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${currentLocationPopularRestaurant.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${currentLocationPopularRestaurant.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${currentLocationPopularRestaurant.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${currentLocationPopularRestaurant.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(currentLocationPopularRestaurant.averageRating , 0 , 1)}(${currentLocationPopularRestaurant.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${currentLocationPopularRestaurant.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 세번째 카테고리 슬라이드-->
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6">
+            <h3 class="mb-0">전국적으로 인기 많은 식당</h3>
+          </div>
+        </div>
+
+        <div class="category-slider ">
+
+          <div class="item mt-5"  th:each="popularRestaurant : ${popularRestaurants}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${popularRestaurant.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${popularRestaurant.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${popularRestaurant.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${popularRestaurant.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${popularRestaurant.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(popularRestaurant.averageRating , 0 , 1)}(${popularRestaurant.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${popularRestaurant.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6">
+            <h3 class="mb-0">이번 주 추천 식당</h3>
+          </div>
+        </div>
+
+        <div class="category-slider ">
+
+          <div class="item mt-5"  th:each="popularRestaurant : ${popularRestaurants}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${popularRestaurant.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${popularRestaurant.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${popularRestaurant.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${popularRestaurant.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${popularRestaurant.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(popularRestaurant.averageRating , 0 , 1)}(${popularRestaurant.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${popularRestaurant.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6">
+            <h3 class="mb-0">좋아요 많이 받은 식당</h3>
+          </div>
+        </div>
+
+        <div class="category-slider ">
+
+          <div class="item mt-5"  th:each="manyLikesRestaurant : ${manyLikesRestaurants}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${manyLikesRestaurant.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${manyLikesRestaurant.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${manyLikesRestaurant.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${manyLikesRestaurant.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${manyLikesRestaurant.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(manyLikesRestaurant.averageRating , 0 , 1)}(${manyLikesRestaurant.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${manyLikesRestaurant.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6">
+            <h3 class="mb-0">평점 높은 식당</h3>
+          </div>
+        </div>
+
+        <div class="category-slider ">
+
+          <div class="item mt-5"  th:each="highRatingRestaurant : ${highRatingRestaurants}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${highRatingRestaurant.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${highRatingRestaurant.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${highRatingRestaurant.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${highRatingRestaurant.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${highRatingRestaurant.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(highRatingRestaurant.averageRating , 0 , 1)}(${highRatingRestaurant.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${highRatingRestaurant.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6">
+            <h3 class="mb-0">리뷰 수 많은 식당</h3>
+          </div>
+        </div>
+
+        <div class="category-slider ">
+
+          <div class="item mt-5"  th:each="manyReviewsRestaurant : ${manyReviewsRestaurants}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${manyReviewsRestaurant.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${manyReviewsRestaurant.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${manyReviewsRestaurant.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${manyReviewsRestaurant.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${manyReviewsRestaurant.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(manyReviewsRestaurant.averageRating , 0 , 1)}(${manyReviewsRestaurant.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${manyReviewsRestaurant.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6">
+            <h3 class="mb-0">1만원 ~ 2만원 사이 추천 식당</h3>
+          </div>
+        </div>
+
+        <div class="category-slider ">
+
+          <div class="item mt-5"  th:each="restaurantByPriceRange : ${restaurantsByPriceRange1}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${restaurantByPriceRange.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${restaurantByPriceRange.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${restaurantByPriceRange.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${restaurantByPriceRange.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${restaurantByPriceRange.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(restaurantByPriceRange.averageRating , 0 , 1)}(${restaurantByPriceRange.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${restaurantByPriceRange.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <section class="mb-lg-10 mt-lg-14 my-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-6">
+            <h3 class="mb-0">2 ~ 3만원 사이 추천 식당</h3>
+          </div>
+        </div>
+
+        <div class="category-slider ">
+
+          <div class="item mt-5"  th:each="restaurantByPriceRange : ${restaurantsByPriceRange2}">
+            <a href="/" th:href="@{/restaurants/{id}(id = ${restaurantByPriceRange.id})}" class="text-decoration-none text-inherit">
+              <div class="card card-product mb-lg-4">
+                <div class="card-body py-8">
+                  <img src="assets/images" th:src="@{${restaurantByPriceRange.restaurantImages[0]}}" style="width:15rem;height:10rem" class="mb-3">
+                  <div class="d-flex justify-content-start">
+                    <div class="text-truncate me-2 fs-5" th:text="${restaurantByPriceRange.name}">Pet Care</div>
+                    <small class="me-1 text-muted mt-1" th:each="restaurantType : ${restaurantByPriceRange.restaurantTypes}" th:text="${restaurantType}"></small>
+                  </div>
+                  <!-- address -->
+                  <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+                    <i class="bi bi-geo-alt"></i><small class="ms-1" th:text="|${restaurantByPriceRange.address.roadAddress}|">&nbsp;&nbsp;서울 강남구 역삼로 134 1층</small>
+                  </div>
+                  <small class="text-warning"><i class="bi bi-star-fill"></i></small>
+                  <small class="ms-1" th:text="|${#numbers.formatDecimal(restaurantByPriceRange.averageRating , 0 , 1)}(${restaurantByPriceRange.reviewCount})|">4.5(30)</small>
+                  <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${restaurantByPriceRange.likesCount}|">123</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 네번째 영역(각 식당 카테고리에 바로 입장)-->
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div>
+              <div class="py-10 px-8 rounded"
+                style="background:url(https://kr.object.ncloudstorage.com/wannav/banner_img/pngtree-dream-halo-rainbow-background-illustration-picture-image_988245.jpg)no-repeat; background-size: cover; background-position: center;">
+                <div>
+                  <h3 class="fw-bold mb-1">진정한 비건인들을 위한 식당
+                  </h3>
+                  <a href="#!" th:href="@{/restaurants}" class="btn btn-dark">자세히 보기</a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="col-6  ">
+
+            <div>
+              <div class="py-10 px-8 rounded"
+                style="background:url(https://kr.object.ncloudstorage.com/wannav/banner_img/%E2%80%94Pngtree%E2%80%94green%20plant%20fresh%20natural%20poster_857372.png)no-repeat; background-size: cover; background-position: center;">
+                <div>
+                  <h3 class="fw-bold mb-1"  >유쾌한 분위기의 식당</h3>
+                  <a th:href="@{/restaurants?moodTypes=활기찬}" class="btn btn-dark">자세히 보기</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-6  ">
+            <div>
+              <div class="py-10 px-8 rounded"
+                style="background:url(https://kr.object.ncloudstorage.com/wannav/banner_img/%E2%80%94Pngtree%E2%80%94simple%20green%20gradient%20geometric%20beautiful_921606.jpg)no-repeat; background-size: cover; background-position: center; ">
+                <div>
+                  <h3 class="fw-bold mb-1" >차분한 분위기의 식당</h3>
+                  <a href="#" th:href="@{/restaurants?moodTypes=차분한}" class="btn btn-dark">자세히 보기</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+    <!-- Popular Products Start-->
+
+  </main>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1820ddf0f285025d0105d85dfd07591c&libraries=services,clusterer,drawing"></script>
+  <script th:inline="javascript">
+    // Kakao Maps API 초기화
+    const geocoder = new kakao.maps.services.Geocoder();
+
+    // "현재 위치 갱신" 버튼 클릭 시 호출될 함수
+    function updateLocation() {
+      // 현재 위치 가져오기
+      navigator.geolocation.getCurrentPosition(
+              function (position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                // Kakao Maps API를 사용해 좌표를 도로명 주소로 변환
+                geocoder.coord2Address(longitude, latitude, function (result, status) {
+                  if (status === kakao.maps.services.Status.OK) {
+                    // 도로명 주소 가져오기
+                    const roadAddress = result[0].road_address
+                            ? result[0].road_address.address_name
+                            : '주소를 가져올 수 없습니다.';
+
+                    console.log('현재 위치 도로명 주소:', roadAddress);
+
+                    // 서버로 도로명 주소 전송
+                    fetch(`?address=${encodeURIComponent(roadAddress)}`, {
+                      method: 'GET',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      }
+                    })
+                            .then(response => {
+                              if (response.ok) {
+                                console.log('현재 위치의 도로명 주소가 서버로 성공적으로 전달되었습니다.');
+                                // 서버로부터 식당 목록 데이터를 받아 메인 페이지가 다시 랜더링됩니다.
+                                window.location.reload(); // 새로고침하여 식당 목록 업데이트
+                              } else {
+                              }
+                            })
+                            .catch(error => {
+                            });
+                  } else {
+                  }
+                });
+              },
+              function (error) {
+              }
+      );
+    }
+  </script>
+
+</main>
+
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>My Reviews</title>
+
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <section class="mt-6 mb-lg-14 mb-8">
+    <!--리뷰 총 개수-->
+    <div class="mt-3 mb-3 ms-2">
+      <h3 class="fw-bold">총 리뷰 <span class="fw-bold text-success" th:text="${reviewSum}"></span>개</h3>
+    </div>
+
+    <!--리뷰 1개-->
+    <div class="row">
+      <div class="col-12" th:each="reviews: ${myReviews}">
+        <div class="card card-product mb-2" style="border-radius: 1%; max-width: 100%">
+          <div class="card-body">
+            <div class="d-flex">
+              <a th:href="@{/restaurants/{id}(id=${reviews.restaurant.id})}" class="text-success text-decoration-none fw-bold ms-2 fs-3" th:text="${reviews.restaurant.name}"></a>
+
+              <div class="dropdown ms-auto">
+                <a href="#" class="text-reset text-opacity-50" data-bs-toggle="dropdown" aria-expanded="false">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                  </svg>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <form th:method="post" th:action="@{/reviews/{id}/edit(id=${reviews.id})}">
+                      <input type="hidden" th:name="id" th:value="${reviews.id}">
+                      <button class="dropdown-item text-opacity-50" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                        </svg>&nbsp;&nbsp;수정</button>
+                    </form>
+                  </li>
+                  <li>
+                    <form th:method="post" th:action="@{/reviews/{id}/delete(id=${reviews.id})}">
+                      <input type="hidden" th:name="id" th:value="${reviews.id}">
+                      <button class="dropdown-item text-opacity-50" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                        </svg>&nbsp;&nbsp;삭제</button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-2 ms-2 mb-1 d-flex align-items-center">
+              <span th:each="i : ${#numbers.sequence(1, reviews.rating)}">
+                <h6 class="me-1 text-warning">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                  </svg>
+                </h6>
+              </span>
+              <h6 class="ms-1 mb-1 fw-bold fs-6" th:text="${reviews.createdAt.toLocalDate()}"></h6>
+            </div>
+
+            <!--리뷰 내용-->
+            <div class="mb-lg-0">
+              <p class="ms-2" th:text="${reviews.content}" style="font-size: 19px">
+              </p>
+            </div>
+
+            <!--이미지-->
+            <div style="overflow-x: auto;">
+              <div th:if="${reviews.image != null}" class="mb-3 col-4 col-md-2 d-flex" style="width: 90%; height: 150px">
+                <img th:each="url: ${#strings.setSplit(reviews.image, ',')}" th:src="${url}" alt="" class="img-fluid border me-1" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="changeImage(this)">
+              </div>
+            </div>
+
+            <!--image modal-->
+            <div class="modal fade" id="imageModal" aria-labelledby="imageModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body d-flex justify-content-center align-items-center">
+                    <img id="modalImage" src="" alt="" style="width: 100%; height: 100%">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--태그-->
+            <div class="d-flex flex-wrap mb-2">
+              <div th:each="tags: ${reviews.reviewTags}">
+                <div class="badge text-bg-light border mb-1 ms-2 fs-6" th:text="${tags.tag.name}"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!--하단 고정 버튼-->
+  <section class="fixed-bottom" style="z-index: 100">
+    <ul class="list-unstyled d-flex justify-content-end mb-4 me-4">
+      <li>
+        <a class="btn-icon btn-ghost-secondary btn rounded-circle text-success"
+           data-bs-toggle="dropdown" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+               class="bi bi-plus-circle-fill" viewBox="0 0 16 16"  style="outline: none; border: none;">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"  fill="#5AAB6F"/>
+            <path
+                d="M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"
+                fill="white"/>
+          </svg>
+        </a>
+        <div class="dropdown-menu dropdown-menu p-0">
+          <ul class="dropdown-menu mx-0 shadow d-block position-static">
+            <li>
+              <a class="dropdown-item d-flex gap-2 align-items-center" th:href="@{/upload-receipt}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-receipt-cutoff text-success" viewBox="0 0 16 16">
+                  <path
+                      d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
+                  <path
+                      d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z"/>
+                </svg>
+                영수증 리뷰쓰기
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex gap-2 align-items-center" th:href="@{/chatbot}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#5AAB6F"
+                     class="bi bi-chat-right-text-fill" viewBox="0 0 16 16">
+                  <path
+                      d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM3.5 3h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1"/>
+                </svg>
+                챗봇
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <script>
+    function changeImage(img) {
+      const modalImage = document.getElementById('modalImage');
+      modalImage.src = img.src;
+    }
+  </script>
+
+  <script th:inline="javascript">
+    const alertMessage = [[${alertMessage}]];
+    if (alertMessage) {
+      alert(alertMessage);
+    }
+  </script>
+</main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+    <section class="mt-2">
+        <div class="container-fluid border bg-white mb-2" th:each="order : ${myOrders}" th:if="${order.orderId != null}">
+            <form th:method="post" th:action="@{/orders/{id}(id=${order.id})}">
+                <input type="hidden" th:name="id" th:value="${order.id}">
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="align-items-center bg-transparent border-0 fw-bold mt-2 mb-2 ms-2 text-decoration-none text-success"
+                            th:text="${order.createdAt.toLocalDate()}">
+                    </button>
+                    <button type="submit" class="align-items-center bg-transparent border-0 fw-bold mt-2 mb-2 ms-2 text-decoration-none text-success"
+                            th:text="${'상세보기 >'}">
+                    </button>
+                </div>
+            </form>
+            <div class="d-flex mb-2" th:each="orderProduct: ${order.paymentItems}">
+                <div class="col-4 mt-2">
+                    <a th:href="@{/products/{id}(id=${orderProduct.product.id})}">
+                        <img class="w-100" style="height: 150px; object-fit: contain" th:src="${orderProduct.product.image}" alt="">
+                    </a>
+                </div>
+
+                <div class="col-8">
+                    <div class="p-4 h-100">
+                        <a class="text-decoration-none text-black" th:href="@{/products/{id}(id=${orderProduct.product.id})}">
+                            <h6 class="fw-bold" th:text="${orderProduct.product.name}"></h6>
+                        </a>
+                        <small class="text-secondary text-opacity-75" th:text="${'수량: ' + orderProduct.quantity + '개'}"></small>
+                        <h6 class="fw-bold mt-3" th:text="${#numbers.formatInteger(orderProduct.product.finalPrice, 0, 'COMMA')} + '원'"></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

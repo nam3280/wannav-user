@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/event/event.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script th:inline="javascript">
+      let couponId = [[${eventCouponResponseDTO.coupon != null ? eventCouponResponseDTO.coupon.id : ''}]];
+      let eventId = [[${eventCouponResponseDTO.event.id}]];
+  </script>
+  <script type="module" defer src="/js/event/event.js"></script>
+  <title>Event detail Page</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <div class="event">
+    <img th:src="${eventCouponResponseDTO.event.detail}">
+    <button type="button" class="button-payment" id="getCouponButton">쿠폰 받기</button>
+  </div>
+</main>
+</body>
+</html>

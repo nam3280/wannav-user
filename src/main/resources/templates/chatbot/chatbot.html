@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Room</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="/js/chatbot/chatbot.js"></script>
+  <link rel="stylesheet" href="/css/chatbot/chatbot.css">
+</head>
+<body>
+<div class="chat-container">
+  <div class="chat-header">
+    <h2>Wanna V</h2>
+    <button id="close-chat" class="close-chat-btn">X</button>
+  </div>
+  <ul class="chat-box" id="chat-box">
+    <!-- 메시지가 동적으로 추가됩니다 -->
+  </ul>
+  <div class="chat-input">
+    <input id="user-message" type="text" placeholder="Type a message..." required>
+    <button id="send-button">Send</button>
+  </div>
+</div>
+</body>
+</html>

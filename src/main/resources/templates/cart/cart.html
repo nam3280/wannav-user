@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/cart/cart.css">
+  <script defer type="module" src="/js/cart/cart.js"></script>
+  <title>Product Detail Page</title>
+</head>
+<body>
+<main layout:fragment="main-content" th:class="main-container">
+  <h3 class="page-title">장바구니</h3>
+  <div class="action-bar">
+    <div class="checkbox-container">
+      <input
+          class="cart-item-check"
+          id="cart-item-check-all"
+          type="checkbox"
+      />
+      <label for="cart-item-check-all" class="checkbox-label"></label>
+    </div>
+    <div>
+      <button class="btn-delete" id="delete-selected-items">선택 삭제</button>
+    </div>
+  </div>
+  <div class="cart-grid">
+    <!--    cart product list -->
+  </div>
+  <div class="action-button" style="left: 0px;">
+    <div class="total-price">
+      <div>총</div>
+      <div class="total-price-amount" th:text="totalPrice"></div>
+    </div>
+    <button class="btn-payment" id="btn-payment">결제</button>
+  </div>
+</main>
+</body>
+</html>

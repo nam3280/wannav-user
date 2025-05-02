@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+</body>
+</html>
+<script th:inline="javascript">
+    window.onload = function() {
+        const errorMessage = [[${errorMessage}]];
+        const restaurantId = [[${restaurantId}]];
+        if (errorMessage) {
+            alert(errorMessage);
+            setTimeout(function() {
+                window.location.href = `/reservation/calendar?restaurantId=${restaurantId}`;
+            }, 0);
+        }
+    };
+</script>

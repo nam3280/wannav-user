@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html th:replace="~{fragment/layout_v1.html :: layout(~{::main})}" xmlns:th="http://www.thymeleaf.org">
+
+
+<main>
+
+  <main>
+
+    <!-- 상위 카테고리 표시 영역 Home / 식당 / 오 이터리 이런 느낌-->
+  <div class="mt-4">
+    <div class="container">
+      <!-- row -->
+      <div class="row ">
+        <!-- col -->
+        <div class="col-12">
+          <!-- breadcrumb -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- 메인 영역-->
+  <section class="mt-8">
+    <div class="container">
+      <div class="row">
+
+
+        <!-- 이미지 슬라이드 영역-->
+        <div class="col-md-6">
+
+          <!-- img slide -->
+          <div class="product" id="product">
+            <div th:each="restaurantImage : ${restaurant.restaurantImages}" th:if="${restaurantImageStat.index} < 4">
+              <a href="/restaurants/1" th:href="@{/restaurants/{id}(id = ${restaurant.id})}" class="text-decoration-none text-inherit">
+                <div >
+                  <div>
+                    <img src="../../static/assets/images/products/product-single-img-1.jpg" th:src="@{${restaurantImage}}"  style="width:100%;height:27rem" alt="Grocery Ecommerce Template" class="mb-3">
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+
+          <!-- 이미지 슬라이드 하단 썸네일 영역 -->
+          <div class="product-tools">
+            <div class="thumbnails row g-3" id="productThumbnails">
+              <div class="col-3" th:each="restaurantImage : ${restaurant.restaurantImages}" th:if="${restaurantImageStat.index} < 4">
+                <div class="thumbnails-img">
+                  <!-- img -->
+                  <img class="d-lg-none d-block" src="../../static/assets/images/products/product-single-img-1.jpg" th:src="@{${restaurantImage}}" style="width:10rem;height:5rem" alt="">
+                  <img class="d-lg-block d-none" src="../../static/assets/images/products/product-single-img-1.jpg" th:src="@{${restaurantImage}}" style="width:10rem;height:7rem" alt="">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <!--메인 매장 정보 영역-->
+        <div class="col-md-6 ">
+          <div class="ps-lg-10 mt-6 mt-md-0">
+            <!-- content -->
+            <!-- heading -->
+              <span class="text-muted me-1" th:each="restaurantType : ${restaurant.restaurantTypes}" th:text="|${restaurantType}|">양식</span>
+            <h1 class="mb-1" th:text="${restaurant.name}">음 이터리 </h1>
+            <div class="mb-4">
+              <!-- rating --> <small class="text-warning"><i class="bi bi-star-fill"></i></small><a href="#" class="ms-1" th:text="|${{restaurant.averageRating}}(${{restaurant.reviewCount}})|">4.5(30)</a>
+                              <small class="text-danger"><i class="bi bi-heart-fill"></i></small> <span class="text-muted small" th:text="|${{restaurant.likesCount}}|">123</span>
+
+            </div>
+            <span th:text="${restaurant.description}">최고의 비건 맛집 음 이터리입니다.</span>
+
+            <!-- hr -->
+            <hr class="my-3">
+
+              <!-- heading -->
+            <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+              <i class="bi bi-geo-alt"></i><span class="ms-1" th:text="|${restaurant.address.roadAddress} ${restaurant.address.detailAddress}|">&nbsp;&nbsp;강남역 1번출구에서 100m</span>
+            </div>
+
+
+
+            <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+              <i class="bi bi-currency-dollar"></i><span class="ms-1" th:text="|평균 ${{restaurant.averageFoodsPrice}}|">&nbsp;&nbsp;평균 10,000원</span>
+            </div>
+
+
+            <div class="text-dark"> <!--가로로 컴포넌트들을 배치-->
+              <i class="bi bi-alarm"></i>
+              <span class="ms-1" th:text="| ${restaurant.businessStatus.description}|">영업 중 </span>
+              <span class="text-muted small">∙</span>
+              <span th:text="|${{todayBusinessDay.closeTime}} 영업 종료|" >22:00 영업 종료</span>
+            </div>
+
+            <div class="mt-3">
+              <div class="fs-6 badge text-bg-light-primary " th:each="provideServiceType : ${restaurant.provideServiceTypes}" th:text="${provideServiceType}"></div>
+            </div>
+
+
+            <div class="mt-3 row justify-content-start g-2 align-items-center">
+
+
+
+
+              <a th:href="@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurant.id})}" class="btn btn-primary col-11 clear-button">예약하기</a>
+
+
+
+            </div>
+            <!-- hr -->
+            <hr class="my-6">
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+    <style>
+      .navbar-container {
+  display: flex;
+  justify-content: space-around; /* 중앙에 배치하면서 일정 간격으로 띄움 */
+  width: 100%;
+}
+
+    </style>
+
+
+
+    <!-- 하단 전체 영역-->
+    <section class="mt-lg-14 mt-8 ">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+
+
+          <!-- 모바일 , 데스크탑 UI 메뉴 바 상세 영역 추후 데스크탑 UI 중간 안맞다싶으면 margin-right:1rem 조절하자-->
+          <ul class="nav nav-pills nav-lb-tab navbar-container" id="myTab" role="tablist" >
+            <!-- nav item -->
+            <li class="nav-item navbar-item mx-5" role="presentation">
+              <!-- btn --> <button class="nav-link active" id="product-tab" data-bs-toggle="tab"
+                data-bs-target="#product-tab-pane" type="button" role="tab" aria-controls="product-tab-pane"
+                aria-selected="true" style="font-size:large;margin-right:1rem;">매장 정보</button> <!-- 여기에 지도 및 주소 나타내면 될듯 , 또한 상세정보들 기입 , 캐치테이블 참고해서 ㄱㄱ-->
+            </li>
+            <!-- nav item -->
+            <li class="nav-item navbar-item mx-5" role="presentation">
+              <!-- btn --> <button class="nav-link" id="details-tab" data-bs-toggle="tab"
+                data-bs-target="#details-tab-pane" type="button" role="tab" aria-controls="details-tab-pane"
+                aria-selected="false" style="font-size:large;margin-right:1rem;">메뉴</button>
+            </li>
+            <!-- nav item -->
+            <li class="nav-item navbar-item mx-5" role="presentation">
+              <!-- btn --> <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
+                data-bs-target="#reviews-tab-pane" type="button" role="tab" aria-controls="reviews-tab-pane"
+                aria-selected="false" style="font-size:large;margin-right:1rem;">리뷰</button>
+            </li>
+
+          </ul>
+
+
+
+          <!-- 데스크탑 UI 메뉴 바 상세 영역-->
+
+
+
+          <!-- 1. 매장 정보 메뉴  -->
+          <div class="tab-content" id="myTabContent">
+
+            <!-- 매장 정보 메뉴 -->
+            <div class="tab-pane fade show active" id="product-tab-pane" role="tabpanel" aria-labelledby="product-tab"
+              tabindex="0">
+              <div class="my-8">
+                <div class="row">
+                  <div class="col-12">
+                    <h4 class="mb-4">매장 소개</h4>
+                    <p th:text="${restaurant.description}">청담동도심 속 정원에서 미국 정통 스테이크의 맛과 서비스를 느껴보세요. 넓은 정원과 쾌적한 환경을 제공해드립니다.</p>
+
+                  </div>
+
+                  <div class="col-12 mt-4">
+                    <h4 class="mb-4">위치</h4>
+
+                    <div class="col-12" id="map" style="height:350px; "></div> <!-- col--->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 음식 메뉴바 -->
+            <div class="tab-pane fade" id="details-tab-pane" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
+              <div class="my-8">
+
+                  <ul class="list-group list-group-flush">
+                  <!-- list group -->
+                  <li class="list-group-item py-3 ps-0 border-top" th:each="food : ${restaurant.foods}">
+                    <!-- 이미지 -->
+                    <div class="row align-items-center" >
+                      <div class="col-3 col-lg-1">
+                        <img src="/assets/images/restaurant/food/food4.jpeg" th:src="@{${food.image}}" alt="Ecommerce" class="img-fluid">
+                      </div>
+
+                      <div class="col-4 col-md-6 col-lg-5">  <!-- col로 조절하면 됨-->
+                        <!-- title -->
+                        <a href="../restaurant/restaurant.html" class="text-inherit">
+                          <h5 th:text="${food.name}" class="mb-0" style="white-space: nowrap;">비건 소세지 바</h5>
+                        </a>
+                        <div class="mt-1">
+                        <!-- price -->
+                          <span class="fw-bold " th:text="${{food.price}}">15,000원</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <!-- list group -->
+                </ul>
+
+
+              </div>
+            </div>
+            <!-- tab pane -->
+            <div class="tab-pane fade" id="reviews-tab-pane" role="tabpanel" aria-labelledby="reviews-tab" tabindex="0">
+              <div class="my-8">
+                <!-- row -->
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="me-lg-12 mb-6 mb-md-0">
+                      <div class="mb-5">
+                        <!-- title -->
+                        <h4 class="mb-3">리뷰 통계</h4>
+                        <span>
+                          <!-- rating -->
+                            <small class="text-warning" th:with="intAverageRating=${#numbers.formatDecimal(restaurant.averageRating , 0 , 0)}">
+                            <i class="bi bi-star-fill" th:each="rating : ${#numbers.sequence(1, intAverageRating)}"></i>
+                            <i class="bi bi-star-half" th:if="${restaurant.averageRating} - ${intAverageRating} > 0"></i>
+                            </small>
+                          <span class="ms-3" th:text="|5점 만점에 ${#numbers.formatDecimal(restaurant.averageRating , 0 , 1)}점|">5점 만점에 4.1점</span>
+                          <small class="ms-3" th:text="|${restaurant.reviewCount}명 투표|">130명 투표</small></span>
+                      </div>
+                      <div class="mb-8">
+                        <!-- progress -->
+                        <div class="d-flex align-items-center mb-2" th:each="reviewsByRatingEntry : ${reviewsByRating}" th:with="rateCount=${#numbers.formatDecimal((reviewsByRatingEntry.value.size() * 100.0) / restaurant.reviewCount , 0 , 1)}">
+                          <div class="text-nowrap me-3 text-muted">
+                            <span class="d-inline-block align-middle text-muted" th:text="${reviewsByRatingEntry.key}">5</span><i class="bi bi-star-fill ms-1 small text-warning"></i>
+                          </div>
+                          <div class="w-100">
+                            <div class="progress" style="height: 6px;">
+                              <div class="progress-bar bg-warning" role="progressbar" style="width: 60%;" th:style="|width : ${rateCount}%|"
+                                aria-valuenow="60" th:aria-valuenow="${rateCount}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </div>
+                              <span class="text-muted ms-3" style="width:20%" th:text="|${rateCount} %|"></span>
+                        </div>
+
+
+                      </div>
+
+                      <div class="d-grid">
+                        <h4>리뷰 쓰기</h4>
+                        <a th:href="@{/upload-receipt}" class="btn btn-outline-gray-400 mt-4 text-muted">리뷰 작성하기</a>
+                      </div>
+
+                    </div>
+                  </div>
+                  <!-- col -->
+                  <div class="col-md-8">
+                    <div class="mb-10">
+                      <div class="d-flex justify-content-between align-items-center mb-8">
+                        <div>
+                          <!-- heading -->
+                          <h4>사용자 리뷰</h4>
+                        </div>
+
+                      </div>
+                      <div class="d-flex border-bottom pb-6 mb-6" th:each="review : ${restaurant.reviews}">
+                        <!-- img -->
+                        <!-- img --><img src="../../static/assets/images/avatar/avatar-10.jpg" th:src="@{${review.user.profile}}" alt="" class="rounded-circle avatar-lg">
+                        <div class="ms-5">
+                          <h6 class="mb-1" th:text="${review.user.username}">이경민</h6>
+                          <!-- select option -->
+                          <!-- content -->
+                          <p class="small"> <span class="text-muted" th:text="${review.visitDate}">2022-12-04</span>
+                          <!-- rating -->
+                          <div class=" mb-2">
+                            <i class="bi bi-star-fill text-warning" th:each="rating : ${#numbers.sequence(1, review.rating)}"></i>
+                          </div>
+                          <!-- text-->
+                          <p th:text="${review.content}">맛있어요 최고</p>
+                          <div>
+                            <div class="border icon-shape border-2 "th:each="image : ${#strings.setSplit(review.image, ',')}">
+                              <img src="../../static/assets/images/products/product-img-1.jpg" th:src="@{${image}}" style="width:20rem;height:20rem" alt="" class="img-fluid ">
+                            </div>
+                          </div>
+
+                          <div class="mt-3">
+                            <span class="fs-6 badge text-bg-light-primary me-1 mt-2" th:each="reviewTag : ${review.reviewTags}" th:text="${reviewTag.tag.name}">글루텐프리 메뉴</span>
+                          </div>
+
+
+                        </div>
+                      </div>
+
+                      <div>
+                        <a href="#" class="btn btn-outline-gray-400 text-muted">더 많은 리뷰 보기</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </section>
+
+  <!-- section -->
+  <section class="my-lg-14 my-14">
+    <div class="container">
+      <!-- row -->
+      <div class="row">
+        <div class="col-12">
+          <!-- heading -->
+          <h3>이 장소와 비슷한 맛집</h3>
+        </div>
+      </div>
+
+
+      <!-- row -->
+      <div class="row g-4 row-cols-xl-3 row-cols-lg-3 row-cols-2 row-cols-md-2 mt-2">
+
+        <!-- col -->
+        <div class="col" th:each="similarRestaurant : ${similarRestaurants}">
+          <div class="card card-product" style="display: flex;flex-direction: column;flex: 1;">
+            <div class="card-body " >
+              <!-- badge -->
+              <div class="text-center position-relative ">
+                <a href="/restaurants/1" th:href="@{/restaurants/{id}(id=${restaurant.id})}" ><img src="/assets/images/restaurant/dliea/place1.jpg" th:src="@{${similarRestaurant.restaurantImages[0]}}" style="width:50rem;height:20rem" class="mb-3 img-fluid d-none d-lg-block"></a>
+                <a href="/restaurants/1" th:href="@{/restaurants/{id}(id=${restaurant.id})}" ><img src="/assets/images/restaurant/dliea/place1.jpg" th:src="@{${similarRestaurant.restaurantImages[0]}}"  style="width:50rem;height:9rem" class="mb-3 img-fluid d-block d-lg-none"></a>
+              </div>
+
+              <!-- 식당 이름 및 분류-->
+              <div class="text-small mb-1"><a href="#!" class="text-decoration-none text-muted"><small th:each="restaurantType : ${similarRestaurant.restaurantTypes}" th:text="|${restaurantType} |">양식</small></a></div>
+              <h1 class="fs-5"><a href="/restaurants/1" th:href="@{/restaurants/{id}(id = ${similarRestaurant.id})}" class="text-inherit text-decoration-none" th:text="${similarRestaurant.name}">딜리아다이닝</a></h1>
+
+              <div>
+                <!-- 별점-->
+                 <small class="text-warning">
+                  <i class="bi bi-star-fill"></i></small> <span class="text-muted small" th:text="|${{similarRestaurant.averageRating}}(${similarRestaurant.reviewCount})|">4.5(149)</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+  <!-- modal -->
+  <!-- Modal -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body p-8">
+        <div class="position-absolute top-0 end-0 me-3 mt-3">
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <!-- img slide -->
+            <div class="product productModal" id="productModal">
+              <div
+                class="zoom"
+                onmousemove="zoom(event)"
+                style="
+                  background-image: url(../assets/images/products/product-single-img-1.jpg);
+                "
+              >
+                <!-- img -->
+                <img
+                  src="../../static/assets/images/products/product-single-img-1.jpg"
+                  alt=""
+            >
+              </div>
+              <div>
+                <div
+                  class="zoom"
+                  onmousemove="zoom(event)"
+                  style="
+                    background-image: url(../assets/images/products/product-single-img-2.jpg);
+                  "
+                >
+                  <!-- img -->
+                  <img
+                    src="../../static/assets/images/products/product-single-img-2.jpg"
+                    alt=""
+              >
+                </div>
+              </div>
+              <div>
+                <div
+                  class="zoom"
+                  onmousemove="zoom(event)"
+                  style="
+                    background-image: url(../assets/images/products/product-single-img-3.jpg);
+                  "
+                >
+                  <!-- img -->
+                  <img
+                    src="../../static/assets/images/products/product-single-img-3.jpg"
+                    alt=""
+              >
+                </div>
+              </div>
+              <div>
+                <div
+                  class="zoom"
+                  onmousemove="zoom(event)"
+                  style="
+                    background-image: url(../assets/images/products/product-single-img-4.jpg);
+                  "
+                >
+                  <!-- img -->
+                  <img
+                    src="../../static/assets/images/products/product-single-img-4.jpg"
+                    alt=""
+              >
+                </div>
+              </div>
+            </div>
+            <!-- product tools -->
+            <div class="product-tools">
+              <div class="thumbnails row g-3" id="productModalThumbnails">
+                <div class="col-3 tns-nav-active">
+                  <div class="thumbnails-img">
+                    <!-- img -->
+                    <img
+                      src="../../static/assets/images/products/product-single-img-1.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="thumbnails-img" >
+                    <!-- img -->
+                    <img
+                      src="../../static/assets/images/products/product-single-img-2.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="thumbnails-img">
+                    <!-- img -->
+                    <img
+                      src="../../static/assets/images/products/product-single-img-3.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="thumbnails-img">
+                    <!-- img -->
+                    <img
+                      src="../../static/assets/images/products/product-single-img-4.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="ps-lg-8 mt-6 mt-lg-0">
+              <a href="#!" class="mb-4 d-block">Bakery Biscuits</a>
+              <h2 class="mb-1 h1">Napolitanke Ljesnjak</h2>
+              <div class="mb-4">
+                <small class="text-warning">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-half"></i></small
+                ><a href="#" class="ms-2">(30 reviews)</a>
+              </div>
+              <div class="fs-4">
+                <span class="fw-bold text-dark">$32</span>
+                <span class="text-decoration-line-through text-muted">$35</span
+                ><span
+                  ><small class="fs-6 ms-2 text-danger">26% Off</small></span
+                >
+              </div>
+              <hr class="my-6">
+              <div class="mb-4">
+                <button type="button" class="btn btn-outline-secondary">
+                  250g
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                  500g
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                  1kg
+                </button>
+              </div>
+              <div>
+                <!-- input -->
+                <!-- input -->
+                <div class="input-group input-spinner  ">
+                  <input type="button" value="-" class="button-minus  btn  btn-sm " data-field="quantity">
+                  <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field form-control-sm form-input   ">
+                  <input type="button" value="+" class="button-plus btn btn-sm " data-field="quantity">
+                </div>
+              </div>
+              <div
+                class="mt-3 row justify-content-start g-2 align-items-center"
+              >
+
+                <div class="col-lg-4 col-md-5 col-6 d-grid">
+                  <!-- button -->
+                  <!-- btn -->
+                  <button type="button" class="btn btn-primary">
+                    <i class="feather-icon icon-shopping-bag me-2"></i>Add to
+                    cart
+                  </button>
+                </div>
+                <div class="col-md-4 col-5">
+                  <!-- btn -->
+                  <a
+                    class="btn btn-light"
+                    href="#"
+                    data-bs-toggle="tooltip"
+                    data-bs-html="true"
+                    aria-label="Compare"
+                    ><i class="bi bi-arrow-left-right"></i
+                  ></a>
+                  <a
+                    class="btn btn-light"
+                    href="#!"
+                    data-bs-toggle="tooltip"
+                    data-bs-html="true"
+                    aria-label="Wishlist"
+                    ><i class="feather-icon icon-heart"></i
+                  ></a>
+                </div>
+              </div>
+              <hr class="my-6">
+              <div>
+                <table class="table table-borderless">
+                  <tbody>
+                    <tr>
+                      <td>Product Code:</td>
+                      <td>FBB00255</td>
+                    </tr>
+                    <tr>
+                      <td>Availability:</td>
+                      <td>In Stock</td>
+                    </tr>
+                    <tr>
+                      <td>Type:</td>
+                      <td>Fruits</td>
+                    </tr>
+                    <tr>
+                      <td>Shipping:</td>
+                      <td>
+                        <small
+                          >01 day shipping.<span class="text-muted"
+                            >( Free pickup today)</span
+                          ></small
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1820ddf0f285025d0105d85dfd07591c&libraries=services,clusterer,drawing"></script>
+  <script th:inline="javascript">
+    // 1. 서버에서 전달된 데이터를 JavaScript 변수에 저장
+    var restaurant = [[${restaurant}]];
+
+
+    // 2. 카카오 맵 초기화
+    var mapContainer = document.getElementById('map'); // 지도를 표시할 div
+    var mapOption = {
+      center: new kakao.maps.LatLng(37.5665, 126.9780), // 지도의 중심좌표 (서울 기준)
+      level: 10 // 지도의 확대 레벨
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    var imageSrc = 'https://kr.object.ncloudstorage.com/wannav/marker_img/restaurant.png', // 마커이미지의 주소입니다
+            imageSize = new kakao.maps.Size(40, 45), // 마커이미지의 크기입니다
+            imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+    var bounds = new kakao.maps.LatLngBounds();
+
+
+    var address = restaurant.address.roadAddress; // 도로명 주소
+    var restaurantName = restaurant.name; // 창고 이름
+
+    // 주소를 좌표로 변환하는 Geocoder
+    var geocoder = new kakao.maps.services.Geocoder();
+    // 주소를 좌표로 변환 후 마커 생성
+    geocoder.addressSearch(address, function(result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
+
+        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+        // 마커 생성
+        var marker = new kakao.maps.Marker({
+          map: map,
+          position: coords,
+          image: markerImage
+        });
+
+        // 마커 범위 추가
+        bounds.extend(coords);
+
+        var content = `
+                  <div class ="label">
+                  <span class="left"></span>
+                  <span class="center" style="
+      padding:5px;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      border: 2px solid black;
+    ">${restaurantName}</span>
+                  <span class="right"></span></div>`;
+
+
+// 커스텀 오버레이를 생성합니다
+        var customOverlay = new kakao.maps.CustomOverlay({
+          position: coords,
+          content: content
+        });
+
+// 커스텀 오버레이를 지도에 표시합니다
+        customOverlay.setMap(map);
+
+
+        // 마커 클릭 시 상세 페이지로 이동
+        kakao.maps.event.addListener(marker, 'click', function() {
+          window.location.href = '/restaurants/' + restaurant.id; // 상세 페이지 URL
+        });
+
+
+        // 마커가 지도 중심에 맞게 조정 (첫 번째 마커 기준)
+        // 마커를 모두 추가한 후에 중심을 맞춤
+        map.setBounds(bounds);
+      }
+    });
+
+  </script>
+</main>
+
+</html>
