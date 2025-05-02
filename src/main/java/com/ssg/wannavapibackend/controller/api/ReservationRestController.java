@@ -56,12 +56,10 @@ public class ReservationRestController {
 
             Boolean penalty = reservationService.getPenalty(reservationRequestDTO.getRestaurantId());
 
-            if (!penalty) {
-                response.put("message", "예약이 성공적으로 완료되었습니다.");
+            if (!penalty)
                 response.put("status", "success");
-            }
-
-            response.put("status", "payment");
+            else
+                response.put("status", "payment");
 
             return ResponseEntity.ok(response);
 
