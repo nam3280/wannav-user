@@ -48,19 +48,12 @@ public class AuthController {
         accessTokenCookie.setPath("/");
 
         response.addCookie(accessTokenCookie);
-//        response.setHeader("Set-Cookie", "accessToken=" + accessToken +
-//                "; Max-Age=" + 60 +
-//                "; Path=/; HttpOnly; SameSite=Lax");
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setMaxAge(60 * 3);
         refreshTokenCookie.setHttpOnly(true);
 //        refreshTokenCookie.setSecure(true); // https 가능 (도메인)
         refreshTokenCookie.setPath("/");
-
-
-//        response.setHeader("Set-Cookie", "refreshToken=" + refreshToken +
-//                "; Max-Age=" + (60 * 3) + "; Path=/; HttpOnly; SameSite=Lax");
 
         response.addCookie(refreshTokenCookie);
 
