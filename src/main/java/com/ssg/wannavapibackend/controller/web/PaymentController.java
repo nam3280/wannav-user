@@ -58,11 +58,6 @@ public class PaymentController {
         return "payment/reservation";
     }
 
-    @GetMapping("/success")
-    public String reservationNoPenaltySuccess(){
-        return "reservation/complete";
-    }
-
     /**
      * 상품 결제 정보를 세션에 저장하고, 결제 승인 페이지로 리다이렉트하는 메서드
      */
