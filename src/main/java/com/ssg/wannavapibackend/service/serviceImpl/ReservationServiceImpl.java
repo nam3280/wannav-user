@@ -1,17 +1,13 @@
 package com.ssg.wannavapibackend.service.serviceImpl;
 
 import com.ssg.wannavapibackend.config.TossPaymentConfig;
-import com.ssg.wannavapibackend.domain.Reservation;
-import com.ssg.wannavapibackend.domain.Restaurant;
-import com.ssg.wannavapibackend.domain.Seat;
-import com.ssg.wannavapibackend.domain.User;
+import com.ssg.wannavapibackend.domain.*;
+import com.ssg.wannavapibackend.dto.request.PaymentConfirmRequestDTO;
 import com.ssg.wannavapibackend.dto.request.ReservationDateRequestDTO;
 import com.ssg.wannavapibackend.dto.request.ReservationRequestDTO;
 import com.ssg.wannavapibackend.dto.request.ReservationTimeRequestDTO;
-import com.ssg.wannavapibackend.dto.response.ReservationDateResponseDTO;
-import com.ssg.wannavapibackend.dto.response.ReservationPaymentResponseDTO;
-import com.ssg.wannavapibackend.dto.response.ReservationSaveResponseDTO;
-import com.ssg.wannavapibackend.dto.response.ReservationTimeResponseDTO;
+import com.ssg.wannavapibackend.dto.response.*;
+import com.ssg.wannavapibackend.repository.PaymentRepository;
 import com.ssg.wannavapibackend.repository.ReservationRepository;
 import com.ssg.wannavapibackend.repository.RestaurantRepository;
 import com.ssg.wannavapibackend.repository.UserRepository;
@@ -36,6 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final RestaurantRepository restaurantRepository;
+    private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final TossPaymentConfig tossPaymentConfig;
     private final JWTUtil jwtUtil;
@@ -103,11 +100,14 @@ public class ReservationServiceImpl implements ReservationService {
 
         Reservation reservationComplete = reservationRepository.save(reservation);
 
-        return new ReservationSaveResponseDTO(
-                reservationComplete.getId(),
-                reservationComplete.getRestaurant().getIsPenalty(),
-                reservationRepository.existsById(reservation.getId()));
+        return ReservationSaveResponseDTO.builder()
+                .reservationId(reservationComplete.getId())
+                .isPenalty(reservationComplete.getRestaurant().getIsPenalty())
+                .isSave(reservationRepository.existsById(reservation.getId()))
+                .build();
     }
+
+
 
     /**
      * 예약하기 : 예약 날짜를 선택했을 때 예약 시간 버튼 생성
@@ -148,10 +148,35 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Boolean getPenalty(Long restaurantId) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new IllegalArgumentException("식당이 없습니다."));
-        return restaurant.getIsPenalty();
+    @Transactional
+    public void saveReservationPayment(User user, PaymentConfirmRequestDTO requestDTO, PaymentConfirmResponseDTO confirmResponseDTO) {
+        Payment payment = Payment.builder()
+                .user(user)
+                .paymentKey(requestDTO.getTossPaymentRequestDTO().getPaymentKey())
+                .orderId(requestDTO.getTossPaymentRequestDTO().getOrderId())
+                .actualPrice(requestDTO.getPaymentItemRequestDTO().getActualPrice())
+                .finalPrice(requestDTO.getPaymentItemRequestDTO().getFinalPrice())
+                .status(confirmResponseDTO.getStatus())
+                .createdAt(requestDTO.getPaymentItemRequestDTO().getCreatedAt())
+                .build();
+        paymentRepository.save(payment);
+
+        Restaurant restaurant = restaurantRepository.findById(requestDTO.getPaymentItemRequestDTO().getRestaurantId()).orElseThrow(() -> new IllegalArgumentException("식당이 없습니다."));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        LocalDate localDate = LocalDate.parse(requestDTO.getPaymentItemRequestDTO().getReservationDate(), formatter);
+
+        Reservation reservation = Reservation.builder()
+                .user(user)
+                .restaurant(restaurant)
+                .payment(payment)
+                .guest(requestDTO.getPaymentItemRequestDTO().getGuestAccount())
+                .status(true)
+                .reservationDate(localDate)
+                .reservationTime(requestDTO.getPaymentItemRequestDTO().getReservationTime())
+                .createdAt(requestDTO.getPaymentItemRequestDTO().getCreatedAt()).build();
+
+        reservationRepository.save(reservation);
     }
 
     /**
@@ -170,6 +195,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .flatMap(reservation -> reservation.getSeats().stream())
                 .mapToInt(seat -> seat.getSeatCount() * seat.getSeatCapacity())
                 .sum();
+
 
         int calGuest = 0;
 

@@ -13,6 +13,7 @@ import com.ssg.wannavapibackend.dto.request.TossPaymentRequestDTO;
 import com.ssg.wannavapibackend.dto.response.*;
 import com.ssg.wannavapibackend.exception.CustomException;
 import com.ssg.wannavapibackend.exception.PaymentCancelException;
+import com.ssg.wannavapibackend.facade.RedissonLockReservationFacade;
 import com.ssg.wannavapibackend.facade.RedissonLockStockFacade;
 import com.ssg.wannavapibackend.repository.*;
 import com.ssg.wannavapibackend.service.PaymentService;
@@ -26,9 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,9 +44,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserCouponRepository userCouponRepository;
     private final PointLogRepository pointLogRepository;
     private final ProductRepository productRepository;
-    private final ReservationRepository reservationRepository;
-    private final RestaurantRepository restaurantRepository;
     private final RedissonLockStockFacade redissonLockStockFacade;
+    private final RedissonLockReservationFacade redissonLockReservationFacade;
 
 
     @Override
@@ -222,7 +220,6 @@ public class PaymentServiceImpl implements PaymentService {
         return confirmResponseDTO;
     }
 
-    @Transactional
     public PaymentConfirmResponseDTO sendRequestReservationPayment(PaymentConfirmRequestDTO requestDTO) {
         PaymentConfirmResponseDTO confirmResponseDTO = processPaymentConfirmation(requestDTO.getTossPaymentRequestDTO());
         PaymentCancelReason cancelReason = null;
@@ -232,36 +229,7 @@ public class PaymentServiceImpl implements PaymentService {
                 User user = userRepository.findById(requestDTO.getPaymentItemRequestDTO().getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
                 try {
-                    Payment payment = new Payment(null,
-                            user,
-                            requestDTO.getTossPaymentRequestDTO().getPaymentKey(),
-                            requestDTO.getTossPaymentRequestDTO().getOrderId(),
-                            requestDTO.getPaymentItemRequestDTO().getActualPrice(),
-                            requestDTO.getPaymentItemRequestDTO().getFinalPrice(),
-                            null, null, null, null,
-                            confirmResponseDTO.getStatus(),
-                            null, null, null, null,
-                            requestDTO.getPaymentItemRequestDTO().getCreatedAt(),
-                            null, null, null);
-                    paymentRepository.save(payment);
-
-                    Restaurant restaurant = restaurantRepository.findById(requestDTO.getPaymentItemRequestDTO().getRestaurantId()).orElseThrow(() -> new IllegalArgumentException("식당이 없습니다."));
-
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
-                    LocalDate localDate = LocalDate.parse(requestDTO.getPaymentItemRequestDTO().getReservationDate(), formatter);
-
-                    Reservation reservation = Reservation.builder()
-                            .user(user)
-                            .restaurant(restaurant)
-                            .payment(payment)
-                            .guest(requestDTO.getPaymentItemRequestDTO().getGuestAccount())
-                            .status(true)
-                            .reservationDate(localDate)
-                            .reservationTime(requestDTO.getPaymentItemRequestDTO().getReservationTime())
-                            .createdAt(requestDTO.getPaymentItemRequestDTO().getCreatedAt()).build();
-
-                    reservationRepository.save(reservation);
-
+                    redissonLockReservationFacade.reservationPaymentRock(user, requestDTO, confirmResponseDTO);
                 } catch (Exception e) {
                     cancelReason = PaymentCancelReason.PAYMENT_SAVE_FAILED;
                     throw e;
@@ -475,7 +443,6 @@ public class PaymentServiceImpl implements PaymentService {
      * @param requestDTO
      * @return
      */
-    @Transactional
     public PaymentRefundDTO requestPaymentCancel(PaymentRefundDTO requestDTO) {
         try {
             String cancelUrl = tossPaymentConfig.getUrl() + requestDTO.getPaymentKey() + "/cancel";
