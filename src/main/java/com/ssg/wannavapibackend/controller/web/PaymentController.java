@@ -53,15 +53,9 @@ public class PaymentController {
 
     @GetMapping("/reservation")
     public String reservationPayment(@ModelAttribute ReservationRequestDTO reservationRequestDTO, Model model) {
-        try {
-            ReservationPaymentResponseDTO reservationPaymentResponseDTO = reservationService.getReservationPayment(reservationRequestDTO);
-            model.addAttribute("reservationPaymentResponseDTO", reservationPaymentResponseDTO);
-            return "payment/reservation";
-        } catch (RuntimeException ex) {
-            model.addAttribute("errorMessage", ex.getMessage());
-            model.addAttribute("restaurantId", reservationRequestDTO.getRestaurantId());
-            return "reservation/error";
-        }
+        ReservationPaymentResponseDTO reservationPaymentResponseDTO = reservationService.getReservationPayment(reservationRequestDTO);
+        model.addAttribute("reservationPaymentResponseDTO", reservationPaymentResponseDTO);
+        return "payment/reservation";
     }
 
     @GetMapping("/success")

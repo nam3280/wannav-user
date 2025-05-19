@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping
 public class ReservationController {
 
     @GetMapping("restaurants/{restaurantId}/reservation")
@@ -22,15 +22,7 @@ public class ReservationController {
 
     @GetMapping("reservation/calendar")
     public String reservationCalendar(@RequestParam(value = "restaurantId") Long restaurantId, Model model) {
-        if (restaurantId == null)
-            throw new IllegalArgumentException("Restaurant ID is required.");
-
         model.addAttribute("restaurantId", restaurantId);
         return "reservation/calendar";
-    }
-
-    @GetMapping("/reservation")
-    public String reservation() {
-        return "reservation/complete";
     }
 }
