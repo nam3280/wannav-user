@@ -29,14 +29,33 @@ public class ReservationRestController {
     private final RedissonLockReservationFacade redissonLockReservationFacade;
 
     @GetMapping("/date")
-    public ReservationTimeResponseDTO getReservationTime(ReservationDateRequestDTO reservationDateRequestDTO) {
-        return reservationService.getReservationTime(reservationDateRequestDTO);
+    public ResponseEntity<Map<String, Object>> getReservationTime(ReservationDateRequestDTO reservationDateRequestDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            ReservationTimeResponseDTO time = reservationService.getReservationTime(reservationDateRequestDTO);
+            response.put("message", "success");
+            response.put("data", time);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("message", "예약 정보 조회 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @GetMapping("/time")
-    public ReservationDateResponseDTO getReservationGuest(ReservationTimeRequestDTO reservationTimeRequestDTO) {
-        return reservationService.getReservationAvailableGuest(reservationTimeRequestDTO);
+    public ResponseEntity<Map<String, Object>> getReservationGuest(ReservationTimeRequestDTO reservationTimeRequestDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            ReservationDateResponseDTO date = reservationService.getReservationAvailableGuest(reservationTimeRequestDTO);
+            response.put("message", "success");
+            response.put("data", date);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("message", "예약 정보 조회 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
+
 
     @PostMapping("/confirm")
     public ResponseEntity<Map<String, Object>> saveReservation(@RequestBody @Valid ReservationRequestDTO reservationRequestDTO, BindingResult bindingResult) {
@@ -44,33 +63,22 @@ public class ReservationRestController {
 
         if (bindingResult.hasErrors()) {
             response.put("message", "예약 날짜, 예약 시간, 인원 수 모두 선택해야 합니다!");
-            response.put("status", "error");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         try {
             redissonLockReservationFacade.reservationRock(reservationRequestDTO);
-
-            Boolean penalty = reservationService.getPenalty(reservationRequestDTO.getRestaurantId());
-
-            if (!penalty)
-                response.put("status", "success");
-            else
-                response.put("status", "payment");
-
+            response.put("status", "success");
             return ResponseEntity.ok(response);
 
         }   catch (IllegalArgumentException e) {
             response.put("message", "예약은 하루에 한 번 가능합니다!");
-            response.put("status", "error");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }   catch (LockException e) {
             response.put("message", e.getMessage());
-            response.put("status", "error");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }   catch (Exception e) {
             response.put("message", "예약 중 오류가 발생했습니다.");
-            response.put("status", "error");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

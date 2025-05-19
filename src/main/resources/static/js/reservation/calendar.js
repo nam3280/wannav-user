@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedTime = '';
         selectedGuest = '';
 
-        await fetchReservationData(selectedDate, restaurantId);
+        await ReservationData(selectedDate, restaurantId);
     });
 
     document.addEventListener('click', async (e) => {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.rectangle-button').forEach(btn => btn.classList.remove('selected'));
             e.target.classList.add('selected');
 
-            await fetchGuestData();
+            await GuestData();
         }
 
         if (e.target.matches('.circle-button')) {
@@ -41,19 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        if (e.target.id === 'submitReservation') {
+        if (e.target.id === 'submitReservation')
             await submitReservation();
-        }
     });
 });
 
-async function fetchReservationData(date, restaurantId) {
+async function ReservationData(date, restaurantId) {
     try {
         const res = await axios.get('/api/reservation/date', {
             params: { selectDate: date, restaurantId }
         });
 
-        const response = res.data;
+        const response = res.data.data;
         document.getElementById("reservation-time").innerHTML = '<h2 style="padding-top: 40px;">예약 시간</h2>';
 
         let timeButton = '';
@@ -84,7 +83,7 @@ async function fetchReservationData(date, restaurantId) {
     }
 }
 
-async function fetchGuestData() {
+async function GuestData() {
     try {
         const res = await axios.get('/api/reservation/time', {
             params: {
@@ -94,9 +93,9 @@ async function fetchGuestData() {
             }
         });
 
-        isPenalty = res.data.isPenalty;
+        isPenalty = res.data.data.isPenalty;
 
-        const guestAccount = Math.min(res.data.guestAccount, 8);
+        const guestAccount = Math.min(res.data.data.guestAccount, 8);
         const container = document.getElementById("reservation-guest");
         container.innerHTML = '<h2 style="padding-top: 40px;">인원 수</h2>';
 
@@ -118,28 +117,27 @@ async function fetchGuestData() {
 
 async function submitReservation() {
     try {
-        console.log('selectDate:', selectedDate);
-        console.log('selectTime:', selectedTime);
-        console.log('restaurantId:', restaurantId);
-        console.log('selectGuest:', selectedGuest);
-        console.log('isPenalty:', isPenalty);
+        let res;
 
-        const res = await axios.post('/api/reservation/confirm', {
-            selectDate: selectedDate,
-            selectTime: selectedTime,
-            restaurantId: restaurantId,
-            selectGuest: selectedGuest,
-            isPenalty: isPenalty
-        });
+        if (!isPenalty) {
+            res = await axios.post('/api/reservation/confirm', {
+                selectDate: selectedDate,
+                selectTime: selectedTime,
+                restaurantId: restaurantId,
+                selectGuest: selectedGuest,
+                isPenalty: isPenalty
+            });
 
-        const response = res.data;
-        if (response.status === 'success') {
-            window.location.href = '/checkout/success';
-        } else if (response.status === 'payment') {
+            let response = res.data;
+
+            if (response.status === 'success') {
+                window.location.href = '/checkout/success';
+            } else {
+                alert(response.message);
+            }
+        } else {
             const url = `/checkout/reservation?selectDate=${selectedDate}&selectTime=${selectedTime}&restaurantId=${restaurantId}&selectGuest=${selectedGuest}`;
             window.location.href = url.replace(/ /g, '');
-        } else {
-            alert(response.message);
         }
     } catch (error) {
         alert(error.response?.data?.message || "오류가 발생했습니다. 다시 시도해주세요.");
