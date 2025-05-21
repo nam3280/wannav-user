@@ -24,7 +24,7 @@ public class RedissonLockReservationFacade {
         this.reservationService = reservationService;
     }
 
-    public void reservationRock(ReservationRequestDTO reservationRequestDTO) {
+    public void reservationRock(Long userId, ReservationRequestDTO reservationRequestDTO) {
         StringBuilder keyBuilder = new StringBuilder();
 
         keyBuilder.append(reservationRequestDTO.getRestaurantId())
@@ -41,7 +41,7 @@ public class RedissonLockReservationFacade {
             if (!available)
                 throw new LockException("Lock 획득 실패!");
 
-            reservationService.saveReservation(reservationRequestDTO);
+            reservationService.saveReservation(userId, reservationRequestDTO);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new LockException("예약을 진행 중입니다. 다시 시도해 주세요.");
