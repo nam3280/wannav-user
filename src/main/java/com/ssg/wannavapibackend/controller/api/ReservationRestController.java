@@ -7,12 +7,14 @@ import com.ssg.wannavapibackend.dto.response.ReservationDateResponseDTO;
 import com.ssg.wannavapibackend.dto.response.ReservationTimeResponseDTO;
 import com.ssg.wannavapibackend.exception.LockException;
 import com.ssg.wannavapibackend.facade.RedissonLockReservationFacade;
+import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
 import com.ssg.wannavapibackend.service.ReservationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +60,10 @@ public class ReservationRestController {
 
 
     @PostMapping("/confirm")
-    public ResponseEntity<Map<String, Object>> saveReservation(@RequestBody @Valid ReservationRequestDTO reservationRequestDTO, BindingResult bindingResult) {
+    public ResponseEntity<Map<String, Object>> saveReservation(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody @Valid ReservationRequestDTO reservationRequestDTO,
+           BindingResult bindingResult) {
         Map<String, Object> response = new HashMap<>();
 
         if (bindingResult.hasErrors()) {
@@ -67,7 +72,7 @@ public class ReservationRestController {
         }
 
         try {
-            redissonLockReservationFacade.reservationRock(reservationRequestDTO);
+            redissonLockReservationFacade.reservationRock(Long.valueOf(principalDetails.getName()) ,reservationRequestDTO);
             response.put("status", "success");
             return ResponseEntity.ok(response);
 
