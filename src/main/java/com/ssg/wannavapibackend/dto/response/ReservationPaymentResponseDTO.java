@@ -13,7 +13,6 @@ public class ReservationPaymentResponseDTO {
     /**
      * 예약하기를 눌렀을 때 결제 페이지로 넘어갈 데이터
      */
-    private Long reservationId;
 
     private Long userId;
 
