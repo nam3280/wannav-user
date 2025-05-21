@@ -1,7 +1,6 @@
 package com.ssg.wannavapibackend.service;
 
 
-import com.ssg.wannavapibackend.domain.Reservation;
 import com.ssg.wannavapibackend.dto.PaymentRefundDTO;
 import com.ssg.wannavapibackend.dto.request.ProductPurchaseRequestDTO;
 import com.ssg.wannavapibackend.dto.request.PaymentConfirmRequestDTO;
