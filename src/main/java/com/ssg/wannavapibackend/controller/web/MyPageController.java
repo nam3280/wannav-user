@@ -1,12 +1,13 @@
 package com.ssg.wannavapibackend.controller.web;
 
+import com.ssg.wannavapibackend.config.KakaoConfig;
 import com.ssg.wannavapibackend.dto.request.MyPageUpdateDTO;
 import com.ssg.wannavapibackend.dto.request.MyReservationRequestDTO;
-import com.ssg.wannavapibackend.security.util.JWTUtil;
-import com.ssg.wannavapibackend.service.KakaoService;
+import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
 import com.ssg.wannavapibackend.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,15 +25,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MyPageController {
 
     private final MyPageService myPageService;
-    private final KakaoService kakaoService;
-    private final JWTUtil jwtUtil;
+    private final KakaoConfig kakaoConfig;
 
     @GetMapping("my")
-    public String getMyPage(Model model) {
-        model.addAttribute("my", myPageService.findMyPage(jwtUtil.getUserId()));
-        model.addAttribute("location", kakaoService.getKakaoLogout());
-
-        log.info("location" + kakaoService.getKakaoLogout());
+    public String getMyPage(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        model.addAttribute("my", myPageService.findMyPage(Long.parseLong(principalDetails.getName())));
         return "user/mypage";
     }
 
