@@ -11,5 +11,5 @@ public interface EventService {
 
     EventCouponResponseDTO getEvent(Long eventId);
 
-    void couponDistribution(EventCouponRequestDTO eventCouponRequestDTO);
+    void couponDistribution(Long userId, EventCouponRequestDTO eventCouponRequestDTO);
 }
