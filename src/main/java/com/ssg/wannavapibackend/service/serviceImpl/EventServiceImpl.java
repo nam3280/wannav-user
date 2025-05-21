@@ -11,7 +11,6 @@ import com.ssg.wannavapibackend.repository.CouponRepository;
 import com.ssg.wannavapibackend.repository.EventRepository;
 import com.ssg.wannavapibackend.repository.UserCouponRepository;
 import com.ssg.wannavapibackend.repository.UserRepository;
-import com.ssg.wannavapibackend.security.util.JWTUtil;
 import com.ssg.wannavapibackend.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +30,6 @@ public class EventServiceImpl implements EventService {
     private final CouponRepository couponRepository;
     private final UserRepository userRepository;
     private final UserCouponRepository userCouponRepository;
-    private final JWTUtil jwtUtil;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,7 +56,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Transactional
-    public void couponDistribution(EventCouponRequestDTO eventCouponRequestDTO) {
+    public void couponDistribution(Long userId, EventCouponRequestDTO eventCouponRequestDTO) {
 
         if(eventCouponRequestDTO.getCouponId() == null)
             throw new RuntimeException("아직 쿠폰을 받을 수 없습니다.");
@@ -66,16 +64,16 @@ public class EventServiceImpl implements EventService {
         if(!couponRepository.findIsActiveById(eventCouponRequestDTO.getCouponId()))
             throw new RuntimeException("이벤트가 종료되었습니다.");
 
-        if(!userRepository.existsById(jwtUtil.getUserId()))
+        if(!userRepository.existsById(userId))
             throw new RuntimeException("회원가입 후 발급이 가능합니다.");
 
-        if(userCouponRepository.findUserCouponByCouponId(jwtUtil.getUserId(), eventCouponRequestDTO.getCouponId()))
+        if(userCouponRepository.findUserCouponByCouponId(userId, eventCouponRequestDTO.getCouponId()))
             throw new RuntimeException("쿠폰이 이미 존재합니다.");
 
-        User user = userRepository.findById(jwtUtil.getUserId()).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         Coupon coupon = couponRepository.findById(eventCouponRequestDTO.getCouponId()).orElseThrow(() -> new IllegalArgumentException("쿠폰 없음"));
 
-        UserCoupon userCoupon = new UserCoupon(jwtUtil.getUserId(), user, coupon, false);
+        UserCoupon userCoupon = new UserCoupon(userId, user, coupon, false);
 
         userCouponRepository.save(userCoupon);
 
