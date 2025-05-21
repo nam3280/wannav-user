@@ -1,9 +1,6 @@
 package com.ssg.wannavapibackend.security.util;
 
 import com.ssg.wannavapibackend.config.SecretKeyConfig;
-import com.ssg.wannavapibackend.dto.response.KakaoResponseDTO;
-import com.ssg.wannavapibackend.security.auth.CustomUserPrincipal;
-import com.ssg.wannavapibackend.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -29,21 +24,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JWTUtil {
 
-    private final UserService userService;
-
     private final SecretKeyConfig secretKeyConfig;
 
-    //private static final String jwtKey = "1234567890123456789012345678901234567890";
-
-    /**
-     * JWT 토큰 생성 메서드
-     *
-     * @param valueMap 토큰에 포함할 클레임 정보 (예: 이메일, 권한 등)
-     * @param min      토큰의 만료 시간 (분 단위)
-     * @return 생성된 JWT 토큰 문자열
-     */
-
-    public String createToken(Map<String, Object> valueMap, int min) {
+    public String createToken(Map<String, Object> dataMap, int min) {
         SecretKey key = null;
         try {
             key = Keys.hmacShaKeyFor(secretKeyConfig.getJwtKey().getBytes(StandardCharsets.UTF_8));
@@ -59,55 +42,28 @@ public class JWTUtil {
                 .and()
                 .issuedAt(Date.from(ZonedDateTime.now().toInstant()))
                 .expiration(Date.from(ZonedDateTime.now().plusMinutes(min).toInstant()))
-                .claims(valueMap)
+                .claims(dataMap)
                 .signWith(key)
                 .compact();
     }
 
-    /**
-     * JWT 토큰 검증 메서드
-     *
-     * @param token 클라이언트로부터 받은 JWT 토큰
-     * @return 클레임 정보 (JWT에 포함된 사용자 정보와 메타데이터)
-     */
-    public Map<String, Object> validateToken(String token, HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> validateToken(String token) {
         SecretKey key = getKey();
 
-        if(getRefreshTokenCookie(request) == null)
+        if(token == null)
             throw new BadCredentialsException("로그인이 필요합니다.");
 
-        Claims claims = verifyToken(token, key);
-
-        //2. 엑세스 토큰이 만료됬을 때
-        if(claims == null) {
-
-            Claims refreshClaims = verifyToken(getRefreshTokenCookie(request), key);
-
-            Long userId = Long.valueOf(String.valueOf(refreshClaims.get("mid")));
-
-            KakaoResponseDTO kakaoResponseDTO = userService.getUser(userId);
-
-            String newAccessToken = createToken(kakaoResponseDTO.getDataMap(),60 * 3);
-
-            regenerateToken(newAccessToken, response);
-
-            claims = verifyToken(newAccessToken, key);
-        }
-
-        return claims;
+        return verifyToken(token, key);
     }
 
-    /**
-     * JWT 토큰 재발급 메서드
-     */
-    public void regenerateToken(String accessToken, HttpServletResponse response){
+    public void regenerateToken(HttpServletResponse response, String accessToken){
         Cookie accessTokenCookie = new Cookie("accessToken", null);
         accessTokenCookie.setMaxAge(0);
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
 
         accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setMaxAge(60 * 60 * 3);
+        accessTokenCookie.setMaxAge(60 * 3);
         accessTokenCookie.setHttpOnly(true);
         //        accessTokenCookie.setSecure(true); // https 가능 (도메인)
         accessTokenCookie.setPath("/");
@@ -154,7 +110,7 @@ public class JWTUtil {
         return null;
     }
 
-    public SecretKey getKey(){
+    private SecretKey getKey(){
         SecretKey key = null;
 
         try {
@@ -178,11 +134,32 @@ public class JWTUtil {
         response.addCookie(refreshTokenCookie);
     }
 
-    public Long getUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public long getExpiration(String token) {
+        SecretKey key = getKey();
 
-        String userId = ((CustomUserPrincipal) authentication.getPrincipal()).getName();
+        Claims claims = verifyToken(token, key);
 
-        return Long.parseLong(userId);
+        long expirationTime = claims.getExpiration().getTime();
+        long currentTime = System.currentTimeMillis();
+
+        return expirationTime - currentTime;
+    }
+
+    public void createAccessTokenCookie (HttpServletResponse response, String accessToken){
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        //jwtCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(60 * 3);
+        response.addCookie(accessTokenCookie);
+    }
+
+    public void createRefreshTokenCookie (HttpServletResponse response, String refreshToken){
+        Cookie accessTokenCookie = new Cookie("refreshToken", refreshToken);
+        accessTokenCookie.setHttpOnly(true);
+        //jwtCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(60 * 6);
+        response.addCookie(accessTokenCookie);
     }
 }
