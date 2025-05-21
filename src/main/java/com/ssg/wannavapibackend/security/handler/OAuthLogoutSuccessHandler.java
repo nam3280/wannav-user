@@ -1,7 +1,7 @@
 package com.ssg.wannavapibackend.security.handler;
 
 import com.ssg.wannavapibackend.config.KakaoConfig;
-import jakarta.servlet.ServletException;
+import com.ssg.wannavapibackend.security.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,12 @@ import java.io.IOException;
 public class OAuthLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final KakaoConfig kakaoConfig;
+    private final JWTUtil jwtUtil;
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        jwtUtil.removeCookie(response);
+
         String kakaoLogoutUrl = kakaoConfig.getLogoutUrl()
                 + "?client_id=" + kakaoConfig.getClientId()
                 + "&logout_redirect_uri=" + kakaoConfig.getRedirectLogoutUrl();
