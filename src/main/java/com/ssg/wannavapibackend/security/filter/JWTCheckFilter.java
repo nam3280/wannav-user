@@ -1,6 +1,6 @@
 package com.ssg.wannavapibackend.security.filter;
 
-import com.ssg.wannavapibackend.security.auth.CustomUserPrincipal;
+import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
 import com.ssg.wannavapibackend.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,16 +9,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -46,7 +43,6 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 path.startsWith("/api") && !path.equals("/api/v1/chatbot") ||
                 path.equals("/carts") ||
                 path.startsWith("/checkout") ||
-                path.startsWith("/restaurants/") ||
                 path.startsWith("/my") ||
                 path.startsWith("/payment"));
     }
@@ -70,36 +66,42 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return;
         }
 
+        String accessToken = jwtUtil.getAccessTokenCookie(request);
+        String refreshToken = jwtUtil.getRefreshTokenCookie(request);
+
+        if (refreshToken == null || accessToken == null) {
+            response.sendRedirect("/auth/login");
+            return;
+        }
+
         try {
-            if(jwtUtil.getRefreshTokenCookie(request) == null)
-                response.sendRedirect("/auth/login");
+            Map<String, Object> claims = jwtUtil.validateToken(accessToken);
 
-            Map<String, Object> tokenMap = jwtUtil.validateToken(jwtUtil.getAccessTokenCookie(request), request, response);
+            long expirationMillis = jwtUtil.getExpiration(accessToken);
 
-            String mid = tokenMap.get("id").toString();
+            if (expirationMillis > 0 && expirationMillis <= 60000) {
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap.put("userId", claims.get("userId"));
+                dataMap.put("role", claims.get("role"));
 
-            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+                String newAccessToken = jwtUtil.createToken(dataMap, 3);
+                jwtUtil.regenerateToken(response, newAccessToken);
+
+                claims = jwtUtil.validateToken(newAccessToken);
+            }
+
+            String userId = (String) claims.get("userId");
+            PrincipalDetails principal = new PrincipalDetails(userId, Collections.emptyMap());
 
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(
-                            new CustomUserPrincipal(mid),
-                            null,
-                            authorities
-                    );
+                    new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
-            SecurityContext context = SecurityContextHolder.getContext();
-            context.setAuthentication(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-            log.info(context.getAuthentication().isAuthenticated());
             filterChain.doFilter(request, response);
-        } catch (Exception e){
-            handleException(response, e);
-        }
-    }
 
-    private void handleException(HttpServletResponse response, Exception e) throws IOException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.setContentType("application/json");
-        response.getWriter().println("{\"error\": \"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            response.sendRedirect("/auth/login");
+        }
     }
 }
