@@ -8,9 +8,9 @@ import com.ssg.wannavapibackend.dto.request.ReservationTimeRequestDTO;
 import com.ssg.wannavapibackend.dto.response.*;
 
 public interface ReservationService {
-    ReservationPaymentResponseDTO getReservationPayment(ReservationRequestDTO reservationRequestDTO);
+    ReservationPaymentResponseDTO getReservationPayment(Long userId,ReservationRequestDTO reservationRequestDTO);
 
-    ReservationSaveResponseDTO saveReservation(ReservationRequestDTO reservationRequestDTO);
+    void saveReservation(Long userId, ReservationRequestDTO reservationRequestDTO);
 
     //예약 가능한 시간
     ReservationTimeResponseDTO getReservationTime(ReservationDateRequestDTO reservationDateRequestDTO);
