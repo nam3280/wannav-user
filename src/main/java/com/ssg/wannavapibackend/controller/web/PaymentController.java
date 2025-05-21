@@ -6,12 +6,13 @@ import com.ssg.wannavapibackend.dto.request.ReservationRequestDTO;
 import com.ssg.wannavapibackend.dto.response.CheckoutResponseDTO;
 import com.ssg.wannavapibackend.dto.response.ReservationPaymentResponseDTO;
 import com.ssg.wannavapibackend.facade.CheckoutFacade;
-import com.ssg.wannavapibackend.security.util.JWTUtil;
+import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
 import com.ssg.wannavapibackend.service.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,17 +25,17 @@ public class PaymentController {
 
     private final CheckoutFacade checkoutFacade;
     private final ReservationService reservationService;
-    private final JWTUtil jwtUtil;
 
     /**
      * (상품 페이지 OR 장바구니 페이지) 에서 결제 이동 시, 상품 정보를 세션으로 전달하기 위한 메서드
      */
     @PostMapping("/product")
     public String redirectToProductPaymentPage(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody ProductCheckoutRequestDTO checkoutRequestDTO,
             HttpSession session) {
 
-        CheckoutResponseDTO responseDTO = checkoutFacade.processCheckout(jwtUtil.getUserId(),
+        CheckoutResponseDTO responseDTO = checkoutFacade.processCheckout(Long.parseLong(principalDetails.getName()),
                 checkoutRequestDTO);
         session.setAttribute("pageInitData", responseDTO);
 
@@ -52,8 +53,12 @@ public class PaymentController {
     }
 
     @GetMapping("/reservation")
-    public String reservationPayment(@ModelAttribute ReservationRequestDTO reservationRequestDTO, Model model) {
-        ReservationPaymentResponseDTO reservationPaymentResponseDTO = reservationService.getReservationPayment(reservationRequestDTO);
+    public String reservationPayment(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @ModelAttribute ReservationRequestDTO reservationRequestDTO,
+            Model model) {
+        ReservationPaymentResponseDTO reservationPaymentResponseDTO =
+                reservationService.getReservationPayment(Long.parseLong(principalDetails.getName()), reservationRequestDTO);
         model.addAttribute("reservationPaymentResponseDTO", reservationPaymentResponseDTO);
         return "payment/reservation";
     }
