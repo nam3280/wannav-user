@@ -3,8 +3,6 @@ package com.ssg.wannavapibackend.controller.web;
 import com.ssg.wannavapibackend.domain.Restaurant;
 import com.ssg.wannavapibackend.dto.request.ReviewSaveDTO;
 import com.ssg.wannavapibackend.dto.response.OCRResponseDTO;
-import com.ssg.wannavapibackend.repository.RestaurantCustomRepository;
-import com.ssg.wannavapibackend.security.util.JWTUtil;
 import com.ssg.wannavapibackend.service.OCRService;
 import com.ssg.wannavapibackend.service.ReviewService;
 import com.ssg.wannavapibackend.service.TagService;
@@ -31,7 +29,6 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final OCRService ocrService;
     private final TagService tagService;
-    private final JWTUtil jwtUtil;
 
     @GetMapping("upload-receipt")
     public String uploadReceipt() {
