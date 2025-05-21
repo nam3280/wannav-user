@@ -74,11 +74,17 @@
     </section>
 
     <!--로그아웃-->
-    <section class="mt-2">
-        <div class="list-group" style="border-radius: 0.5%;">
-            <a th:href="${location}"><button type="submit" class="list-group-item list-group-item-action fw-bold text-danger" style="font-size: 17px">로그아웃</button></a>
-        </div>
-    </section>
+  <section class="mt-2">
+    <div class="list-group" style="border-radius: 0.5%;">
+      <form action="/auth/logout" method="post">
+        <button type="submit"
+                class="list-group-item list-group-item-action fw-bold text-danger"
+                style="font-size: 17px; cursor: pointer;">
+          로그아웃
+        </button>
+      </form>
+    </div>
+  </section>
 
       <!--하단 고정 버튼-->
   <section class="fixed-bottom" style="z-index: 100">
