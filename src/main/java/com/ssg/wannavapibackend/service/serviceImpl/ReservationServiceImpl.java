@@ -11,7 +11,6 @@ import com.ssg.wannavapibackend.repository.PaymentRepository;
 import com.ssg.wannavapibackend.repository.ReservationRepository;
 import com.ssg.wannavapibackend.repository.RestaurantRepository;
 import com.ssg.wannavapibackend.repository.UserRepository;
-import com.ssg.wannavapibackend.security.util.JWTUtil;
 import com.ssg.wannavapibackend.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -35,16 +34,15 @@ public class ReservationServiceImpl implements ReservationService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final TossPaymentConfig tossPaymentConfig;
-    private final JWTUtil jwtUtil;
 
     /**
      * 예약하기를 눌렀을 때 저장된 예약 데이터 조회
      */
     @Override
     @Transactional(readOnly = true)
-    public ReservationPaymentResponseDTO getReservationPayment(ReservationRequestDTO reservationRequestDTO) {
+    public ReservationPaymentResponseDTO getReservationPayment(Long userId, ReservationRequestDTO reservationRequestDTO) {
 
-        if(reservationRepository.existsByMyReservaion(jwtUtil.getUserId(), reservationRequestDTO.getRestaurantId(), reservationRequestDTO.getSelectDate()))
+        if(reservationRepository.existsByMyReservaion(userId, reservationRequestDTO.getRestaurantId(), reservationRequestDTO.getSelectDate()))
             throw new RuntimeException("하루에 한 번만 예약이 가능합니다!");
 
         Restaurant restaurant = restaurantRepository.findById(reservationRequestDTO.getRestaurantId()).orElseThrow(() -> new IllegalArgumentException("Invalid ID value: "));
@@ -59,8 +57,7 @@ public class ReservationServiceImpl implements ReservationService {
         String amPm = dateTime.getHour() < 12 ? "오전" : "오후";
 
         return ReservationPaymentResponseDTO.builder()
-                .reservationId(jwtUtil.getUserId())
-                .userId(jwtUtil.getUserId())
+                .userId(userId)
                 .restaurantId(reservationRequestDTO.getRestaurantId())
                 .restaurantName(restaurant.getName())
                 .roadAddress(restaurant.getAddress().getRoadAddress())
@@ -79,11 +76,11 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     @Transactional
-    public ReservationSaveResponseDTO saveReservation(ReservationRequestDTO reservationRequestDTO) {
+    public void saveReservation(Long userId, ReservationRequestDTO reservationRequestDTO) {
 
         Restaurant restaurant = restaurantRepository.findById(reservationRequestDTO.getRestaurantId()).orElseThrow(() -> new IllegalArgumentException("식당이 없습니다."));
 
-        User user = userRepository.findById(jwtUtil.getUserId()).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 없습니다."));
 
         if (reservationRepository.existsByMyReservaion(user.getId(), reservationRequestDTO.getRestaurantId(), reservationRequestDTO.getSelectDate()))
             throw new IllegalArgumentException("당일 예약은 한 번만 가능합니다.");
@@ -97,14 +94,7 @@ public class ReservationServiceImpl implements ReservationService {
                 reservationTime(reservationRequestDTO.getSelectTime()).
                 createdAt(LocalDateTime.now()).
                 build();
-
-        Reservation reservationComplete = reservationRepository.save(reservation);
-
-        return ReservationSaveResponseDTO.builder()
-                .reservationId(reservationComplete.getId())
-                .isPenalty(reservationComplete.getRestaurant().getIsPenalty())
-                .isSave(reservationRepository.existsById(reservation.getId()))
-                .build();
+        reservationRepository.save(reservation);
     }
 
 
