@@ -1,7 +1,10 @@
 package com.ssg.wannavapibackend.config;
 
 import com.ssg.wannavapibackend.security.filter.JWTCheckFilter;
+import com.ssg.wannavapibackend.security.handler.OAuthLoginSuccessHandler;
+import com.ssg.wannavapibackend.security.handler.OAuthLogoutSuccessHandler;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +13,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -20,16 +27,16 @@ import java.util.List;
 
 @Getter
 @Configuration
+@RequiredArgsConstructor
 @EnableMethodSecurity
 @Log4j2
 public class SecurityConfig {
 
-    private JWTCheckFilter jwtCheckFilter;
+    private final JWTCheckFilter jwtCheckFilter;
+    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthService;
+    private final OAuthLoginSuccessHandler oAuthLoginSuccessHandler;
+    private final OAuthLogoutSuccessHandler oAuthLogoutSuccessHandler;
 
-    @Autowired
-    private void setJwtCheckFilter(JWTCheckFilter jwtCheckFilter) {
-        this.jwtCheckFilter = jwtCheckFilter;
-    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -51,7 +58,8 @@ public class SecurityConfig {
 
         httpSecurity.authorizeRequests(authorize -> authorize
             .requestMatchers(
-                "/api/v1/chatbot").permitAll()
+                "/api/v1/chatbot",
+                "/login/oauth2/code/kakao").permitAll()
             .requestMatchers(
                 "/reservation/**",
                 "/reservations/**",
@@ -68,14 +76,21 @@ public class SecurityConfig {
             .anyRequest().permitAll()
         );
 
-        httpSecurity.formLogin(formLogin -> formLogin
-            .loginPage("/auth/login")
-            .permitAll()
-        ).exceptionHandling(exception -> exception
-            .authenticationEntryPoint((request, response, authException) -> {
-                response.sendRedirect("/auth/login");
-            })
-        );
+        httpSecurity
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/auth/login")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuthService))
+                        .successHandler(oAuthLoginSuccessHandler)
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessHandler(oAuthLogoutSuccessHandler)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/auth/login"))
+                );
 
         return httpSecurity.build();
     }
