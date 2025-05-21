@@ -3,13 +3,14 @@ package com.ssg.wannavapibackend.controller.api;
 import com.ssg.wannavapibackend.dto.request.CartItemQuantityUpdateDTO;
 import com.ssg.wannavapibackend.dto.request.CartRequestDTO;
 import com.ssg.wannavapibackend.dto.response.CartResponseDTO;
-import com.ssg.wannavapibackend.security.util.JWTUtil;
+import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
 import com.ssg.wannavapibackend.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,12 +24,12 @@ import java.util.Map;
 public class CartRestController {
 
     private final CartService cartService;
-    private final JWTUtil jwtUtil;
 
     @PostMapping()
     public ResponseEntity<Map<String, String>> addCartItem(
-        @RequestBody @Valid CartRequestDTO requestDTO) {
-        cartService.addCartItem(jwtUtil.getUserId(), requestDTO);
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody @Valid CartRequestDTO requestDTO) {
+        cartService.addCartItem(Long.parseLong(principalDetails.getName()), requestDTO);
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
@@ -37,8 +38,8 @@ public class CartRestController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Map<String, Object>> getCartItemList() {
-        List<CartResponseDTO> cartItems = cartService.getCartItemList(jwtUtil.getUserId());
+    public ResponseEntity<Map<String, Object>> getCartItemList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<CartResponseDTO> cartItems = cartService.getCartItemList(Long.parseLong(principalDetails.getName()));
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
