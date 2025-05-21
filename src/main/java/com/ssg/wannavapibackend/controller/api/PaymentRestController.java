@@ -4,7 +4,7 @@ import com.ssg.wannavapibackend.common.Status;
 import com.ssg.wannavapibackend.dto.request.PaymentConfirmRequestDTO;
 import com.ssg.wannavapibackend.dto.response.PaymentConfirmResponseDTO;
 import com.ssg.wannavapibackend.dto.response.PaymentResponseDTO;
-import com.ssg.wannavapibackend.security.util.JWTUtil;
+import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
 import com.ssg.wannavapibackend.service.PaymentService;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentRestController {
 
     private final PaymentService paymentService;
-    private final JWTUtil jwtUtil;
 
     @PostMapping("/generate-order-id")
     public ResponseEntity<Map<String, Object>> generateOrderId() {
@@ -39,12 +39,13 @@ public class PaymentRestController {
 
     @PostMapping("/confirm/widget")
     public ResponseEntity<Map<String, Object>> confirmPayment(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody PaymentConfirmRequestDTO requestDTO) {
 
         PaymentConfirmResponseDTO responseDTO;
 
         if(requestDTO.getPaymentItemRequestDTO().getRestaurantId() == null)
-            responseDTO = paymentService.sendRequest(jwtUtil.getUserId(), requestDTO);
+            responseDTO = paymentService.sendRequest(Long.parseLong(principalDetails.getName()), requestDTO);
         else
             responseDTO = paymentService.sendRequestReservationPayment(requestDTO);
 
