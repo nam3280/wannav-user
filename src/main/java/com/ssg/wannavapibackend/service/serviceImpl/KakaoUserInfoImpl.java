@@ -8,11 +8,8 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class KakaoUserInfoImpl implements OAuth2UserInfo {
-    private Map<String, Object> attributes;
 
-    public KakaoUserInfoImpl(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
+    private final Map<String, Object> attributes;
 
     @Override
     public String getProviderId() {

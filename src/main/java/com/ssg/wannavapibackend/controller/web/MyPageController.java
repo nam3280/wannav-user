@@ -1,6 +1,5 @@
 package com.ssg.wannavapibackend.controller.web;
 
-import com.ssg.wannavapibackend.config.KakaoConfig;
 import com.ssg.wannavapibackend.dto.request.MyPageUpdateDTO;
 import com.ssg.wannavapibackend.dto.request.MyReservationRequestDTO;
 import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
@@ -25,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MyPageController {
 
     private final MyPageService myPageService;
-    private final KakaoConfig kakaoConfig;
 
     @GetMapping("my")
     public String getMyPage(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
@@ -34,27 +32,34 @@ public class MyPageController {
     }
 
     @GetMapping("my/edit")
-    public String getMyPageEdit(Model model) {
-        model.addAttribute("myPageUpdateDTO", myPageService.findUserInfo(28L));
-        model.addAttribute("userInfo", myPageService.findUserInfo(28L));
+    public String getMyPageEdit(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        model.addAttribute("myPageUpdateDTO", myPageService.findUserInfo(Long.parseLong(principalDetails.getName())));
+        model.addAttribute("userInfo", myPageService.findUserInfo(Long.parseLong(principalDetails.getName())));
         return "user/mypage-edit";
     }
 
     @PostMapping("my/edit")
-    public String postMyPageEdit(Model model, @ModelAttribute @Validated MyPageUpdateDTO myPageUpdateDTO, BindingResult bindingResult) {
+    public String postMyPageEdit(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            Model model,
+            @ModelAttribute @Validated MyPageUpdateDTO myPageUpdateDTO,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("myPageUpdateDTO", myPageUpdateDTO);
-            model.addAttribute("userInfo", myPageService.findUserInfo(28L));
+            model.addAttribute("userInfo", myPageService.findUserInfo(Long.parseLong(principalDetails.getName())));
             printErrorLog(bindingResult);
             return "user/mypage-edit";
         }
-        myPageService.updateMyPage(28L, myPageUpdateDTO);
+        myPageService.updateMyPage(Long.parseLong(principalDetails.getName()), myPageUpdateDTO);
         return "redirect:/my";
     }
 
     @GetMapping("reservations")
-    public String getMyReservations(MyReservationRequestDTO myReservationRequestDTO, Model model) {
-        model.addAttribute("myReservation", myPageService.findMyReservations(28L, myReservationRequestDTO));
+    public String getMyReservations(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            MyReservationRequestDTO myReservationRequestDTO,
+            Model model) {
+        model.addAttribute("myReservation", myPageService.findMyReservations(Long.parseLong(principalDetails.getName()), myReservationRequestDTO));
         return "user/my-reservation";
     }
 
@@ -80,14 +85,14 @@ public class MyPageController {
     }
 
     @GetMapping("likes")
-    public String getMyLikes(Model model) {
-        model.addAttribute("myLikes", myPageService.findMyLikes(28L));
+    public String getMyLikes(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        model.addAttribute("myLikes", myPageService.findMyLikes(Long.parseLong(principalDetails.getName())));
         return "user/my-likes";
     }
 
     @GetMapping("orders")
-    public String getMyOrders(Model model) {
-        model.addAttribute("myOrders", myPageService.findMyOrders(28L));
+    public String getMyOrders(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        model.addAttribute("myOrders", myPageService.findMyOrders(Long.parseLong(principalDetails.getName())));
         return "user/my-order";
     }
 
@@ -101,22 +106,22 @@ public class MyPageController {
     }
 
     @GetMapping("points")
-    public String getMyPoints(Model model) {
-        model.addAttribute("myPoints", myPageService.findMyPoints(28L));
-        model.addAttribute("sum", myPageService.findUserInfo(28L));
+    public String getMyPoints(@AuthenticationPrincipal PrincipalDetails principalDetails,Model model) {
+        model.addAttribute("myPoints", myPageService.findMyPoints(Long.parseLong(principalDetails.getName())));
+        model.addAttribute("sum", myPageService.findUserInfo(Long.parseLong(principalDetails.getName())));
         return "user/my-point";
     }
 
     @GetMapping("coupons")
-    public String getMyCoupons(Model model) {
-        model.addAttribute("myCoupons", myPageService.findMyCoupons(28L));
+    public String getMyCoupons(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        model.addAttribute("myCoupons", myPageService.findMyCoupons(Long.parseLong(principalDetails.getName())));
         return "user/my-coupon";
     }
 
     @GetMapping("reviews")
-    public String getMyReviews(Model model) {
-        model.addAttribute("myReviews", myPageService.findMyReviews(28L));
-        model.addAttribute("reviewSum", myPageService.findMyPage(28L).getReviewCount());
+    public String getMyReviews(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        model.addAttribute("myReviews", myPageService.findMyReviews(Long.parseLong(principalDetails.getName())));
+        model.addAttribute("reviewSum", myPageService.findMyPage(Long.parseLong(principalDetails.getName())).getReviewCount());
         return "user/my-review";
     }
 

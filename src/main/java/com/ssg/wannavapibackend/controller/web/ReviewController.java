@@ -3,11 +3,13 @@ package com.ssg.wannavapibackend.controller.web;
 import com.ssg.wannavapibackend.domain.Restaurant;
 import com.ssg.wannavapibackend.dto.request.ReviewSaveDTO;
 import com.ssg.wannavapibackend.dto.response.OCRResponseDTO;
+import com.ssg.wannavapibackend.security.principal.PrincipalDetails;
 import com.ssg.wannavapibackend.service.OCRService;
 import com.ssg.wannavapibackend.service.ReviewService;
 import com.ssg.wannavapibackend.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -82,15 +84,19 @@ public class ReviewController {
 
     @PostMapping("reviews/write")
     @Transactional
-    public String saveReview(@ModelAttribute @Validated ReviewSaveDTO reviewSaveDTO, BindingResult bindingResult,
-                             Model model, RedirectAttributes redirectAttributes) {
+    public String saveReview(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @ModelAttribute @Validated ReviewSaveDTO reviewSaveDTO,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             printErrorLog(bindingResult);
             model.addAttribute("reviewSaveDTO", reviewSaveDTO);
             model.addAttribute("tagsAll", tagService.findTagsForReview());
             return "review/review-write";
         }
-        reviewService.saveReview(28L, reviewSaveDTO, reviewSaveDTO.getRestaurant(), reviewSaveDTO.getVisitDate());
+        reviewService.saveReview(Long.parseLong(principalDetails.getName()), reviewSaveDTO, reviewSaveDTO.getRestaurant(), reviewSaveDTO.getVisitDate());
         redirectAttributes.addFlashAttribute("alertMessage", "작성 완료되었습니다.");
         return "redirect:/reviews";
     }
