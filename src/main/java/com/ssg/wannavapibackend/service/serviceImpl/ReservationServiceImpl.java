@@ -77,6 +77,12 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public void saveReservation(Long userId, ReservationRequestDTO reservationRequestDTO) {
+        List<Reservation> reservations = reservationRepository.findAllByRestaurantId(reservationRequestDTO.getRestaurantId());
+
+        int guest = calRemainingGuest(reservations, reservationRequestDTO.getRestaurantId(), reservationRequestDTO.getSelectTime(), reservationRequestDTO.getSelectDate());
+
+        if(guest == 0 || guest - reservationRequestDTO.getSelectGuest() < 0)
+            throw new IllegalStateException("예약 가능한 인원이 부족합니다.");
 
         Restaurant restaurant = restaurantRepository.findById(reservationRequestDTO.getRestaurantId()).orElseThrow(() -> new IllegalArgumentException("식당이 없습니다."));
 
@@ -140,6 +146,16 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public void saveReservationPayment(User user, PaymentConfirmRequestDTO requestDTO, PaymentConfirmResponseDTO confirmResponseDTO) {
+        List<Reservation> reservations = reservationRepository.findAllByRestaurantId(requestDTO.getPaymentItemRequestDTO().getRestaurantId());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        LocalDate localDate = LocalDate.parse(requestDTO.getPaymentItemRequestDTO().getReservationDate(), formatter);
+
+        int guest = calRemainingGuest(reservations, requestDTO.getPaymentItemRequestDTO().getRestaurantId(),requestDTO.getPaymentItemRequestDTO().getReservationTime() ,localDate);
+
+        if(guest == 0 || guest - requestDTO.getPaymentItemRequestDTO().getGuestAccount() < 0)
+            throw new IllegalStateException("예약 가능한 인원이 부족합니다.");
+
         Payment payment = Payment.builder()
                 .user(user)
                 .paymentKey(requestDTO.getTossPaymentRequestDTO().getPaymentKey())
@@ -152,9 +168,6 @@ public class ReservationServiceImpl implements ReservationService {
         paymentRepository.save(payment);
 
         Restaurant restaurant = restaurantRepository.findById(requestDTO.getPaymentItemRequestDTO().getRestaurantId()).orElseThrow(() -> new IllegalArgumentException("식당이 없습니다."));
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
-        LocalDate localDate = LocalDate.parse(requestDTO.getPaymentItemRequestDTO().getReservationDate(), formatter);
 
         Reservation reservation = Reservation.builder()
                 .user(user)
