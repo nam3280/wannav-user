@@ -162,4 +162,25 @@ public class JWTUtil {
         accessTokenCookie.setMaxAge(60 * 6);
         response.addCookie(accessTokenCookie);
     }
+
+    public String getProviderFromRequest(HttpServletRequest request) {
+        String token = getAccessTokenCookie(request);
+        if (token == null)
+            throw new IllegalArgumentException("토큰이 없습니다.");
+        Map<String, Object> claims = validateToken(token);
+        if (claims == null)
+            throw new IllegalArgumentException("클레임이 없습니다.");
+        return (String) claims.get("provider");
+    }
+
+    public String getUserIdFromRequest(HttpServletRequest request) {
+        String token = getAccessTokenCookie(request);
+        if (token == null)
+            throw new IllegalArgumentException("토큰이 없습니다.");
+        Map<String, Object> claims = validateToken(token);
+        if (claims == null)
+            throw new IllegalArgumentException("클레임이 없습니다.");
+        return (String) claims.get("userId");
+    }
+
 }
