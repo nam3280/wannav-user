@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -82,6 +85,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             if (expirationMillis > 0 && expirationMillis <= 60000) {
                 Map<String, Object> dataMap = new HashMap<>();
                 dataMap.put("userId", claims.get("userId"));
+                dataMap.put("provider", claims.get("provider"));
                 dataMap.put("role", claims.get("role"));
 
                 String newAccessToken = jwtUtil.createToken(dataMap, 3);
@@ -91,12 +95,14 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             }
 
             String userId = (String) claims.get("userId");
-            PrincipalDetails principal = new PrincipalDetails(userId, Collections.emptyMap());
+            String provider = (String) claims.get("provider");
+            PrincipalDetails principal = new PrincipalDetails(userId, provider, Collections.emptyMap());
 
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+            Set<SimpleGrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
 
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            OAuth2AuthenticationToken oauth2Token = new OAuth2AuthenticationToken(principal, authorities, provider);
+
+            SecurityContextHolder.getContext().setAuthentication(oauth2Token);
 
             filterChain.doFilter(request, response);
 
