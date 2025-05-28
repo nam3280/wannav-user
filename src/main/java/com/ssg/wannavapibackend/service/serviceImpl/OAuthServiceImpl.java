@@ -20,20 +20,17 @@ public class OAuthServiceImpl extends DefaultOAuth2UserService implements OAuth2
 
     private final UserService userService;
 
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest)  throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        OAuth2UserInfo oAuth2UserInfo = null;
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-        if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
-            oAuth2UserInfo = new KakaoUserInfoImpl(oAuth2User.getAttributes());
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
-            //네이버 구현 예정
-        } else {
-            System.out.println("지원하지않음.");
-        }
+        OAuth2UserInfo oAuth2UserInfo = switch (registrationId) {
+            case "kakao" -> new KakaoUserInfoImpl(oAuth2User.getAttributes());
+            case "naver" -> new NaverUserInfoImpl(oAuth2User.getAttributes());
+            default -> throw new OAuth2AuthenticationException("지원하지 않는 OAuth2 공급자입니다.");
+        };
 
         String nickName = oAuth2UserInfo.getProviderInfo().getNickName();
         String profile = oAuth2UserInfo.getProviderInfo().getProfile();
@@ -43,6 +40,6 @@ public class OAuthServiceImpl extends DefaultOAuth2UserService implements OAuth2
 
         String id = String.valueOf(user.getId());
 
-        return new PrincipalDetails(id, oAuth2User.getAttributes());
+        return new PrincipalDetails(id, registrationId, oAuth2User.getAttributes());
     }
 }
