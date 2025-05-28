@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,11 @@ public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
 
         String id = ((PrincipalDetails) authentication.getPrincipal()).getName();
+        String provider = ((PrincipalDetails) authentication.getPrincipal()).getProvider();
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("userId", id);
+        dataMap.put("provider", provider);
         dataMap.put("role", "ROLE_USER");
 
         String accessToken = jwtUtil.createToken(dataMap, 3);
