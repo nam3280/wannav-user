@@ -282,6 +282,23 @@
 
 </details>
 
-
-
-
+## 구현
+<table style="width: 100%; table-layout: fixed;">
+  <tr>
+    <td style="width: 33%; text-align:center; padding: 10px;">
+      <img src="https://github.com/user-attachments/assets/9e981613-99f2-4247-ac9f-6e5bfca74457"
+           style="width: 100%; height: 400px; object-fit: cover;" />
+      <p>(1) 소셜 로그인</p>
+    </td>
+    <td style="width: 33%; text-align:center; padding: 10px;">
+      <img src="https://github.com/user-attachments/assets/eac7afaa-3fdb-4660-a2fb-9ebf029aba0b"
+           style="width: 100%; height: 400px; object-fit: cover;" />
+      <p>(2) 예약</p>
+    </td>
+    <td style="width: 33%; text-align:center; padding: 10px;">
+      <img src="https://github.com/user-attachments/assets/24c44f85-d8d4-4efc-86a7-368e7f1afb52"
+           style="width: 100%; height: 400px; object-fit: cover;" />
+      <p>(3) 결제</p>
+    </td>
+  </tr>
+</table>
