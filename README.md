@@ -282,12 +282,6 @@
 
 </details>
 
-## 7. 구현
-
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/920e3aff-4022-4f64-a8ea-dd8da5fd24c0" controls style="width: 100%;"></video>
-</div>
-
 
 
 
