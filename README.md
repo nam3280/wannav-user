@@ -153,7 +153,7 @@
 #### 예약
 <img width="1044" alt="image" src="https://github.com/user-attachments/assets/1baafa1f-c1e4-4876-9a21-bb65f825161e" />
 
-## 프로젝트 설계
+## 6. 프로젝트 설계
 
 <details>
 <summary><h3>1. ERD</h3></summary>
@@ -281,3 +281,13 @@
 ![image](https://github.com/user-attachments/assets/37da60c0-5767-4b83-80ef-205850bc64ae)
 
 </details>
+
+## 7. 구현
+
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/920e3aff-4022-4f64-a8ea-dd8da5fd24c0" controls style="width: 100%;"></video>
+</div>
+
+
+
+
