@@ -300,5 +300,10 @@
            style="width: 100%; height: 400px; object-fit: cover;" />
       <p>(3) 결제</p>
     </td>
+    <td style="width: 33%; text-align:center; padding: 10px;">
+      <img src="https://github.com/user-attachments/assets/b560f442-7004-4320-be67-e001469e3c12"
+           style="width: 100%; height: 400px; object-fit: cover;" />
+      <p>(4) 이벤트</p>
+    </td>
   </tr>
 </table>
