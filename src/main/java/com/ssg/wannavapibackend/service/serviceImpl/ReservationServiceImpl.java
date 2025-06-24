@@ -218,7 +218,7 @@ public class ReservationServiceImpl implements ReservationService {
 
                 int guest = reservation.getGuest();
 
-                List<Integer> sortedCapacities = tables.keySet().stream().sorted(Comparator.reverseOrder()).toList();
+                List<Integer> sortedCapacities = tables.keySet().stream().sorted(Comparator.naturalOrder()).toList();
 
                 for (int capacity : sortedCapacities) {
                     while (guest > 0 && tables.containsKey(capacity) && tables.get(capacity) > 0) {
