@@ -84,8 +84,6 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessHandler(oAuthLogoutSuccessHandler)
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/auth/login"))
